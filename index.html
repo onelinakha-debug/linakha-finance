@@ -169,19 +169,48 @@
             .main-panel { margin-left: 0; }
             .menu-toggle-mobile { display: block; }
         }
-        .a4-statement { background: white; padding: 2rem; border-radius: 28px; font-family: 'Inter','Poppins',sans-serif; }
-        .statement-header { display: flex; justify-content: space-between; border-bottom: 3px solid var(--primary); padding-bottom: 1rem; margin-bottom: 1.5rem; }
+        .a4-statement {
+            background: white; padding: 2rem; border-radius: 28px; font-family: 'Inter','Poppins',sans-serif;
+            width: 100%; max-width: 100%;
+        }
+        .statement-header {
+            display: flex; justify-content: space-between; border-bottom: 3px solid var(--primary);
+            padding-bottom: 1rem; margin-bottom: 1.5rem;
+        }
         .statement-header h2 { font-size: 28px; font-weight: 800; color: var(--primary); }
-        .info-rounded { display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 28px; }
-        .info-chip { background: #F2F5FB; border-radius: 32px; padding: 12px 24px; flex: 1; }
+        .info-rounded {
+            display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 28px;
+        }
+        .info-chip {
+            background: #F2F5FB; border-radius: 32px; padding: 12px 24px; flex: 1;
+        }
         .info-chip strong { font-size: 10px; text-transform: uppercase; color: #10367D; display: block; }
         .info-chip span { font-size: 16px; font-weight: 700; }
-        .invoice-table-a4 { width: 100%; border-collapse: collapse; margin: 1.5rem 0; }
-        .invoice-table-a4 th { background: #EBF0F8; padding: 14px 12px; font-size: 14px; font-weight: 800; border: 1px solid #ddd; }
-        .invoice-table-a4 td { padding: 12px; font-size: 12px; border-bottom: 1px solid #e2e8f0; }
-        .total-glam { background: #F2F6FF; border-radius: 36px; padding: 1rem 2rem; text-align: right; margin-top: 1rem; border-right: 8px solid var(--accent); }
-        .footer-signature { margin-top: 2rem; display: flex; justify-content: space-between; border-top: 2px dashed #cbd5e1; padding-top: 1.2rem; font-size: 10px; }
-        .preview-area { background: #fefefe; border-radius: 28px; padding: 1rem; margin-top: 1.5rem; border: 1px solid #eef2f8; }
+        .invoice-table-a4 {
+            width: 100%; border-collapse: collapse; margin: 1.5rem 0;
+        }
+        .invoice-table-a4 th {
+            background: #EBF0F8; padding: 14px 12px; font-size: 14px; font-weight: 800; border: 1px solid #ddd;
+        }
+        .invoice-table-a4 td {
+            padding: 12px; font-size: 12px; border-bottom: 1px solid #e2e8f0;
+        }
+        .total-glam {
+            background: #F2F6FF; border-radius: 36px; padding: 1rem 2rem;
+            text-align: right; margin-top: 1rem; border-right: 8px solid var(--accent);
+        }
+        .footer-signature {
+            margin-top: 2rem; display: flex; justify-content: space-between;
+            border-top: 2px dashed #cbd5e1; padding-top: 1.2rem; font-size: 10px;
+        }
+        .preview-area {
+            background: #fefefe; border-radius: 28px; padding: 1rem; margin-top: 1.5rem;
+            border: 1px solid #eef2f8;
+        }
+        .document-actions {
+            display: flex; gap: 12px; margin: 15px 0 5px;
+            flex-wrap: wrap;
+        }
     </style>
 </head>
 <body>
@@ -190,8 +219,8 @@
         <i class="fas fa-hand-holding-heart" style="font-size: 52px; color: var(--primary);"></i>
         <h1>Linakha Family</h1>
         <p>Shared Finance Hub · Kenyan Shilling</p>
-        <input type="text" id="loginUsername" placeholder="Username" value="admin">
-        <input type="password" id="loginPassword" placeholder="Password" value="admin123">
+        <input type="text" id="loginUsername" placeholder="Username">
+        <input type="password" id="loginPassword" placeholder="Password">
         <button class="login-btn" id="doLoginBtn"><i class="fas fa-arrow-right-to-bracket"></i> Login</button>
         <div class="change-pwd-link" id="changePwdLink"><i class="fas fa-key"></i> Change Password</div>
     </div>
@@ -218,11 +247,11 @@
         </div>
         <div id="eventsPage" class="page" style="display:none;"><div class="card"><h2><i class="fas fa-calendar-alt"></i> Manage Events</h2><div class="form-group"><input type="text" id="newEventName" placeholder="Event Name"><input type="number" id="newEventTarget" placeholder="Target Amount (KES)"><button id="createEventBtn"><i class="fas fa-plus"></i> Create Event</button></div><input type="text" id="searchEventInput" class="search-input" placeholder="🔍 Search events..."><div id="eventsListDiv"></div></div></div>
         <div id="membersPage" class="page" style="display:none;"><div class="card"><h2><i class="fas fa-users"></i> Family Members</h2><div class="form-group"><input type="text" id="newMemberName" placeholder="Full Name"><select id="memberStatusSelect"><option value="active">Active</option><option value="inactive">Inactive</option></select><button id="addMemberBtn"><i class="fas fa-user-plus"></i> Add Member</button></div><input type="text" id="searchMemberInput" class="search-input" placeholder="🔍 Search members..."><div id="membersListDiv"></div><button id="toggleInactiveFilter" class="secondary" style="margin-top:12px;"><i class="fas fa-filter"></i> Show Inactive Only</button></div></div>
-        <div id="contributionsPage" class="page" style="display:none;"><div class="card"><h2><i class="fas fa-coins"></i> Record Contribution (KES)</h2><div class="form-group"><label>🔍 Search Member</label><input type="text" id="memberSearchInput" class="search-input" placeholder="Type member name..."><select id="contMemberSel" size="5" style="height:120px; border-radius:20px;"></select><label>🔍 Search Event</label><input type="text" id="eventSearchInput" class="search-input" placeholder="Type event name..."><select id="contEventSel" size="5" style="height:120px; border-radius:20px;"></select><input type="number" id="contAmount" placeholder="Amount (KES)"><input type="date" id="contDate"><button id="recordContBtn"><i class="fas fa-save"></i> Record</button></div><hr style="margin:20px 0;"><h3>Event Summary (All Members)</h3><select id="eventSummarySelect"></select><div class="download-group" style="margin:12px 0; display:flex; gap:10px; flex-wrap:wrap;"><button id="previewSummaryBtn"><i class="fas fa-eye"></i> Preview</button><button id="exportSummaryPdfBtn"><i class="fas fa-file-pdf"></i> PDF (A4)</button><button id="exportSummaryPngBtn"><i class="fas fa-image"></i> PNG</button><button id="exportSummaryExcelBtn"><i class="fas fa-file-excel"></i> Excel</button></div><div id="summaryPreviewArea" class="preview-area"></div><hr style="margin:20px 0;"><h3>Transaction Log</h3><div id="contributionTableView"></div></div></div>
+        <div id="contributionsPage" class="page" style="display:none;"><div class="card"><h2><i class="fas fa-coins"></i> Record Contribution (KES)</h2><div class="form-group"><label>🔍 Search Member</label><input type="text" id="memberSearchInput" class="search-input" placeholder="Type member name..."><select id="contMemberSel" size="5" style="height:120px; border-radius:20px;"></select><label>🔍 Search Event</label><input type="text" id="eventSearchInput" class="search-input" placeholder="Type event name..."><select id="contEventSel" size="5" style="height:120px; border-radius:20px;"></select><input type="number" id="contAmount" placeholder="Amount (KES)"><input type="date" id="contDate"><button id="recordContBtn"><i class="fas fa-save"></i> Record</button></div><hr style="margin:20px 0;"><h3>Event Summary (All Members)</h3><select id="eventSummarySelect"></select><div class="document-actions"><button id="previewSummaryBtn"><i class="fas fa-eye"></i> Preview</button><button id="exportSummaryPdfBtn"><i class="fas fa-file-pdf"></i> PDF (A4)</button><button id="exportSummaryPngBtn"><i class="fas fa-image"></i> PNG</button><button id="exportSummaryExcelBtn"><i class="fas fa-file-excel"></i> Excel</button></div><div id="summaryPreviewArea" class="preview-area"></div><hr style="margin:20px 0;"><h3>Transaction Log</h3><div id="contributionTableView"></div></div></div>
         <div id="statementsPage" class="page" style="display:none;">
-            <div class="card"><h2><i class="fas fa-file-invoice"></i> Member Statement (A4)</h2><div class="form-group"><label>Member</label><select id="stmtMemberSel"></select><label>From Date</label><input type="date" id="stmtFromDate"><label>To Date</label><input type="date" id="stmtToDate"><button id="previewStmtBtn"><i class="fas fa-eye"></i> Preview</button><button id="downloadStmtBtn"><i class="fas fa-download"></i> Download PDF (A4)</button></div><div id="statementPreviewArea" class="preview-area"></div></div>
-            <div class="card"><h2><i class="fas fa-chart-simple"></i> Member Statement for Specific Event</h2><div class="form-group"><label>Select Member</label><select id="eventStmtMemberSel"></select><label>Select Event</label><select id="eventStmtEventSel"></select><button id="previewEventStmtBtn"><i class="fas fa-eye"></i> Preview</button><button id="downloadEventStmtBtn"><i class="fas fa-download"></i> Download PDF (A4)</button></div><div id="eventStatementPreviewArea" class="preview-area"></div></div>
-            <div class="card"><h2><i class="fas fa-chart-simple"></i> All Members Report for an Event</h2><div class="form-group"><label>Select Event</label><select id="allMembersEventSelect"></select><button id="generateAllMembersReportBtn"><i class="fas fa-file-pdf"></i> Generate PDF (All Members)</button></div><div id="allMembersReportPreview" class="preview-area"></div></div>
+            <div class="card"><h2><i class="fas fa-file-invoice"></i> Member Statement (A4)</h2><div class="form-group"><label>Member</label><select id="stmtMemberSel"></select><label>From Date</label><input type="date" id="stmtFromDate"><label>To Date</label><input type="date" id="stmtToDate"></div><div class="document-actions"><button id="previewStmtBtn"><i class="fas fa-eye"></i> Preview</button><button id="downloadStmtBtn"><i class="fas fa-download"></i> PDF (A4)</button><button id="downloadStmtPngBtn"><i class="fas fa-image"></i> PNG</button></div><div id="statementPreviewArea" class="preview-area"></div></div>
+            <div class="card"><h2><i class="fas fa-chart-simple"></i> Member Statement for Specific Event</h2><div class="form-group"><label>Select Member</label><select id="eventStmtMemberSel"></select><label>Select Event</label><select id="eventStmtEventSel"></select></div><div class="document-actions"><button id="previewEventStmtBtn"><i class="fas fa-eye"></i> Preview</button><button id="downloadEventStmtBtn"><i class="fas fa-download"></i> PDF (A4)</button><button id="downloadEventStmtPngBtn"><i class="fas fa-image"></i> PNG</button></div><div id="eventStatementPreviewArea" class="preview-area"></div></div>
+            <div class="card"><h2><i class="fas fa-chart-simple"></i> All Members Report for an Event</h2><div class="form-group"><label>Select Event</label><select id="allMembersEventSelect"></select></div><div class="document-actions"><button id="generateAllMembersReportBtn"><i class="fas fa-file-pdf"></i> PDF (A4)</button><button id="generateAllMembersReportPngBtn"><i class="fas fa-image"></i> PNG</button></div><div id="allMembersReportPreview" class="preview-area"></div></div>
         </div>
     </div>
 </div>
@@ -234,7 +263,7 @@
     let members = [];
     let events = [];
     let contributions = [];
-    let currentPassword = "admin123";
+    let currentPassword = "admin123";   // default password, user can change
     let showInactiveOnly = false;
     
     // Helper: fetch data from Google Sheet
@@ -427,42 +456,63 @@
     document.getElementById("eventSummarySelect").onchange = () => renderContributionTable();
     document.getElementById("toggleInactiveFilter").onclick = () => { showInactiveOnly=!showInactiveOnly; renderMembersList(showInactiveOnly, document.getElementById("searchMemberInput")?.value||""); };
     
-    // PDF generation functions (same as before)
+    // ----- PNG export helper (keeps proportions) -----
+    async function exportAsPng(element, filename) {
+        if(!element) return;
+        const originalWidth = element.style.width;
+        const originalMaxWidth = element.style.maxWidth;
+        element.style.width = "210mm";   // A4 width
+        element.style.maxWidth = "210mm";
+        const canvas = await html2canvas(element, { scale: 3, backgroundColor: '#ffffff', logging: false });
+        element.style.width = originalWidth;
+        element.style.maxWidth = originalMaxWidth;
+        const link = document.createElement('a');
+        link.download = filename;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+    }
+    
+    // ----- Summary Card (Event Summary) -----
     function generateSummaryCard(eventId) {
         let eventObj=events.find(e=>e.id===eventId); if(!eventObj) return null;
         let eventContribs=contributions.filter(c=>c.eventId===eventId);
         let memberTotals={}; eventContribs.forEach(c=>{ memberTotals[c.memberId]=(memberTotals[c.memberId]||0)+c.amount; });
         let totalEvent=eventContribs.reduce((s,c)=>s+c.amount,0);
         let rows=''; for(let mid in memberTotals) rows+=`<tr><td>${getMemberName(parseInt(mid))}</td><td style="text-align:right;">${formatKES(memberTotals[mid])}</td></tr>`;
-        return `<div id="summaryCard" style="background:white; padding:1.5rem; border-radius:28px;"><div style="display:flex; justify-content:space-between;"><h2 style="color:#10367D;">${toTitle(eventObj.name)}</h2><span>${new Date().toLocaleDateString()}</span></div><div style="display:flex; gap:15px; margin:20px 0;"><div style="background:#F2F5FB; padding:10px 20px; border-radius:28px;"><strong>Total Collected</strong><br>${formatKES(totalEvent)}</div><div style="background:#F2F5FB; padding:10px 20px; border-radius:28px;"><strong>Target</strong><br>${formatKES(eventObj.target)}</div></div><table style="width:100%;"><thead><tr><th>Member</th><th>Total (KES)</th></tr></thead><tbody>${rows}</tbody></table><div class="total-glam"><strong>Grand Total: ${formatKES(totalEvent)}</strong></div><div style="text-align:center; margin-top:20px; font-style:italic;">Thank you for your contribution, let's grow together.</div><div style="margin-top:16px; font-size:11px; text-align:center;">📞 +254112598008 | Linakha Family</div></div>`;
+        return `<div id="summaryCard" style="background:white; padding:1.5rem; border-radius:28px; width:210mm; max-width:100%;"><div style="display:flex; justify-content:space-between;"><h2 style="color:#10367D;">${toTitle(eventObj.name)}</h2><span>${new Date().toLocaleDateString()}</span></div><div style="display:flex; gap:15px; margin:20px 0;"><div style="background:#F2F5FB; padding:10px 20px; border-radius:28px;"><strong>Total Collected</strong><br>${formatKES(totalEvent)}</div><div style="background:#F2F5FB; padding:10px 20px; border-radius:28px;"><strong>Target</strong><br>${formatKES(eventObj.target)}</div></div><table style="width:100%;"><thead><tr><th>Member</th><th>Total (KES)</th></tr></thead><tbody>${rows}</tbody></table><div class="total-glam"><strong>Grand Total: ${formatKES(totalEvent)}</strong></div><div style="text-align:center; margin-top:20px; font-style:italic;">Thank you for your contribution, let's grow together.</div><div style="margin-top:16px; font-size:11px; text-align:center;">📞 +254112598008 | Linakha Family</div></div>`;
     }
     document.getElementById("previewSummaryBtn").onclick = () => { let eid=parseInt(document.getElementById("eventSummarySelect").value); if(eid) document.getElementById("summaryPreviewArea").innerHTML=generateSummaryCard(eid)||"<p>No contributions yet.</p>"; else alert("Select an event"); };
     document.getElementById("exportSummaryPdfBtn").onclick = () => { let eid=parseInt(document.getElementById("eventSummarySelect").value); if(eid){ let html=generateSummaryCard(eid); if(html){ document.getElementById("summaryPreviewArea").innerHTML=html; let el=document.getElementById("summaryCard"); if(el) html2pdf().set({margin:[0.5,0.5,0.5,0.5], filename:`Event_Summary.pdf`, jsPDF:{unit:'in', format:'a4'}}).from(el).save(); } } else alert("Select event"); };
-    document.getElementById("exportSummaryPngBtn").onclick = async () => { let eid=parseInt(document.getElementById("eventSummarySelect").value); if(eid){ let html=generateSummaryCard(eid); document.getElementById("summaryPreviewArea").innerHTML=html; let el=document.getElementById("summaryCard"); if(el){ let canvas=await html2canvas(el,{scale:2.5}); let link=document.createElement("a"); link.download="summary.png"; link.href=canvas.toDataURL(); link.click(); } } else alert("Select event"); };
+    document.getElementById("exportSummaryPngBtn").onclick = async () => { let eid=parseInt(document.getElementById("eventSummarySelect").value); if(eid){ let html=generateSummaryCard(eid); document.getElementById("summaryPreviewArea").innerHTML=html; let el=document.getElementById("summaryCard"); if(el) await exportAsPng(el, `Event_Summary.png`); } else alert("Select event"); };
     document.getElementById("exportSummaryExcelBtn").onclick = () => { let eid=parseInt(document.getElementById("eventSummarySelect").value); if(eid){ let contribs=contributions.filter(c=>c.eventId===eid); let memberTotals={}; contribs.forEach(c=>{ memberTotals[c.memberId]=(memberTotals[c.memberId]||0)+c.amount; }); let data=Object.keys(memberTotals).map(mid=>({ Member: getMemberName(parseInt(mid)), Total_KES: memberTotals[mid] })); let ws=XLSX.utils.json_to_sheet(data); let wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Summary"); XLSX.writeFile(wb, `Event_Summary.xlsx`); } else alert("Select event"); };
     
+    // ----- Member Statement (date range) -----
     function generateA4Statement(memberId, fromDate, toDate) {
         let member=members.find(m=>m.id===memberId);
         let filtered=contributions.filter(c=>c.memberId===memberId && c.date>=fromDate && c.date<=toDate).sort((a,b)=>new Date(a.date)-new Date(b.date));
         let eventMap={}; filtered.forEach(c=>{ eventMap[c.eventId]=(eventMap[c.eventId]||0)+c.amount; });
         let totalAmount=filtered.reduce((s,c)=>s+c.amount,0);
         let invId="LNH-"+Math.floor(Math.random()*10000);
-        return `<div id="statementA4" class="a4-statement"><div class="statement-header"><div><h2>LINAKHA FAMILY</h2><p>Financial Statement</p></div><div><strong>#${invId}</strong><br>${new Date().toLocaleDateString()}</div></div><div class="info-rounded"><div class="info-chip"><strong>Member</strong><span>${member.name}</span></div><div class="info-chip"><strong>Period</strong><span>${fromDate} to ${toDate}</span></div><div class="info-chip"><strong>Status</strong><span>${member.status}</span></div></div><table class="invoice-table-a4"><thead><tr><th>DATE</th><th>EVENT</th><th>AMOUNT (KES)</th></tr></thead><tbody>${filtered.map(c=>`<tr><td>${c.date}</td><td>${toTitle(getEventName(c.eventId))}</td><td style="text-align:right;">${formatKES(c.amount)}</td></tr>`).join('')}</tbody></table><div style="background:#F9FCFE; border-radius:28px; padding:1rem; margin:1rem 0;"><strong>Event Summary</strong><table style="width:100%; margin-top:10px;">${Object.keys(eventMap).map(eid=>`<tr><td>${toTitle(getEventName(parseInt(eid)))}</td><td style="text-align:right;">${formatKES(eventMap[eid])}</td></tr>`).join('')}</table></div><div class="total-glam"><strong>TOTAL CONTRIBUTION: ${formatKES(totalAmount)}</strong></div><div class="footer-signature"><span><i class="fas fa-phone"></i> +254112598008 | linakha.family</span><span>Thank you for your contribution, let's grow together.</span></div></div>`;
+        return `<div id="statementA4" style="background:white; padding:2rem; border-radius:28px; width:210mm; max-width:100%;"><div class="statement-header"><div><h2>LINAKHA FAMILY</h2><p>Financial Statement</p></div><div><strong>#${invId}</strong><br>${new Date().toLocaleDateString()}</div></div><div class="info-rounded"><div class="info-chip"><strong>Member</strong><span>${member.name}</span></div><div class="info-chip"><strong>Period</strong><span>${fromDate} to ${toDate}</span></div><div class="info-chip"><strong>Status</strong><span>${member.status}</span></div></div><table class="invoice-table-a4"><thead><tr><th>DATE</th><th>EVENT</th><th>AMOUNT (KES)</th></tr></thead><tbody>${filtered.map(c=>`<tr><td>${c.date}</td><td>${toTitle(getEventName(c.eventId))}</td><td style="text-align:right;">${formatKES(c.amount)}</td></tr>`).join('')}</tbody></table><div style="background:#F9FCFE; border-radius:28px; padding:1rem; margin:1rem 0;"><strong>Event Summary</strong><table style="width:100%; margin-top:10px;">${Object.keys(eventMap).map(eid=>`<tr><td>${toTitle(getEventName(parseInt(eid)))}</td><td style="text-align:right;">${formatKES(eventMap[eid])}</td></tr>`).join('')}</table></div><div class="total-glam"><strong>TOTAL CONTRIBUTION: ${formatKES(totalAmount)}</strong></div><div class="footer-signature"><span><i class="fas fa-phone"></i> +254112598008 | linakha.family</span><span>Thank you for your contribution, let's grow together.</span></div></div>`;
     }
     document.getElementById("previewStmtBtn").onclick = () => { let mid=parseInt(document.getElementById("stmtMemberSel").value), from=document.getElementById("stmtFromDate").value, to=document.getElementById("stmtToDate").value; if(mid&&from&&to) document.getElementById("statementPreviewArea").innerHTML=generateA4Statement(mid,from,to); else alert("Select member and dates"); };
     document.getElementById("downloadStmtBtn").onclick = () => { let mid=parseInt(document.getElementById("stmtMemberSel").value), from=document.getElementById("stmtFromDate").value, to=document.getElementById("stmtToDate").value; if(mid&&from&&to){ document.getElementById("statementPreviewArea").innerHTML=generateA4Statement(mid,from,to); let el=document.getElementById("statementA4"); if(el) html2pdf().set({margin:[0.5,0.5,0.5,0.5], filename:`Statement_${getMemberName(mid)}.pdf`, jsPDF:{unit:'in', format:'a4'}}).from(el).save(); } else alert("Select member and dates"); };
+    document.getElementById("downloadStmtPngBtn").onclick = async () => { let mid=parseInt(document.getElementById("stmtMemberSel").value), from=document.getElementById("stmtFromDate").value, to=document.getElementById("stmtToDate").value; if(mid&&from&&to){ document.getElementById("statementPreviewArea").innerHTML=generateA4Statement(mid,from,to); let el=document.getElementById("statementA4"); if(el) await exportAsPng(el, `Statement_${getMemberName(mid)}.png`); } else alert("Select member and dates"); };
     
+    // ----- Member Statement for specific event -----
     function generateEventStatement(memberId, eventId) {
         let member=members.find(m=>m.id===memberId);
         let event=events.find(e=>e.id===eventId);
         let filtered=contributions.filter(c=>c.memberId===memberId && c.eventId===eventId).sort((a,b)=>new Date(a.date)-new Date(b.date));
         let totalAmount=filtered.reduce((s,c)=>s+c.amount,0);
         let invId="EVT-"+Math.floor(Math.random()*10000);
-        return `<div id="eventStatementA4" class="a4-statement"><div class="statement-header"><div><h2>LINAKHA FAMILY</h2><p>Event Contribution Statement</p></div><div><strong>#${invId}</strong><br>${new Date().toLocaleDateString()}</div></div><div class="info-rounded"><div class="info-chip"><strong>Member</strong><span>${member.name}</span></div><div class="info-chip"><strong>Event</strong><span>${toTitle(event.name)}</span></div><div class="info-chip"><strong>Target</strong><span>${formatKES(event.target)}</span></div></div><table class="invoice-table-a4"><thead><tr><th>DATE</th><th>AMOUNT (KES)</th></tr></thead><tbody>${filtered.map(c=>`<tr><td>${c.date}</td><td style="text-align:right;">${formatKES(c.amount)}</td></tr>`).join('')}</tbody></table><div class="total-glam"><strong>TOTAL CONTRIBUTION: ${formatKES(totalAmount)}</strong></div><div class="footer-signature"><span><i class="fas fa-phone"></i> +254112598008 | linakha.family</span><span>Thank you for your contribution, let's grow together.</span></div></div>`;
+        return `<div id="eventStatementA4" style="background:white; padding:2rem; border-radius:28px; width:210mm; max-width:100%;"><div class="statement-header"><div><h2>LINAKHA FAMILY</h2><p>Event Contribution Statement</p></div><div><strong>#${invId}</strong><br>${new Date().toLocaleDateString()}</div></div><div class="info-rounded"><div class="info-chip"><strong>Member</strong><span>${member.name}</span></div><div class="info-chip"><strong>Event</strong><span>${toTitle(event.name)}</span></div><div class="info-chip"><strong>Target</strong><span>${formatKES(event.target)}</span></div></div><table class="invoice-table-a4"><thead><tr><th>DATE</th><th>AMOUNT (KES)</th></tr></thead><tbody>${filtered.map(c=>`<tr><td>${c.date}</td><td style="text-align:right;">${formatKES(c.amount)}</td></tr>`).join('')}</tbody></table><div class="total-glam"><strong>TOTAL CONTRIBUTION: ${formatKES(totalAmount)}</strong></div><div class="footer-signature"><span><i class="fas fa-phone"></i> +254112598008 | linakha.family</span><span>Thank you for your contribution, let's grow together.</span></div></div>`;
     }
     document.getElementById("previewEventStmtBtn").onclick = () => { let mid=parseInt(document.getElementById("eventStmtMemberSel").value), eid=parseInt(document.getElementById("eventStmtEventSel").value); if(mid&&eid) document.getElementById("eventStatementPreviewArea").innerHTML=generateEventStatement(mid,eid); else alert("Select member and event"); };
     document.getElementById("downloadEventStmtBtn").onclick = () => { let mid=parseInt(document.getElementById("eventStmtMemberSel").value), eid=parseInt(document.getElementById("eventStmtEventSel").value); if(mid&&eid){ document.getElementById("eventStatementPreviewArea").innerHTML=generateEventStatement(mid,eid); let el=document.getElementById("eventStatementA4"); if(el) html2pdf().set({margin:[0.5,0.5,0.5,0.5], filename:`${getMemberName(mid)}_${getEventName(eid)}.pdf`, jsPDF:{unit:'in', format:'a4'}}).from(el).save(); } else alert("Select member and event"); };
+    document.getElementById("downloadEventStmtPngBtn").onclick = async () => { let mid=parseInt(document.getElementById("eventStmtMemberSel").value), eid=parseInt(document.getElementById("eventStmtEventSel").value); if(mid&&eid){ document.getElementById("eventStatementPreviewArea").innerHTML=generateEventStatement(mid,eid); let el=document.getElementById("eventStatementA4"); if(el) await exportAsPng(el, `${getMemberName(mid)}_${getEventName(eid)}.png`); } else alert("Select member and event"); };
     
+    // ----- All Members Report for an Event -----
     function generateAllMembersReport(eventId) {
         let eventObj=events.find(e=>e.id===eventId);
         let allContribs=contributions.filter(c=>c.eventId===eventId);
@@ -470,17 +520,19 @@
         let rows=''; for(let [mid,amt] of memberMap) rows+=`<tr><td>${getMemberName(mid)}</td><td style="text-align:right;">${formatKES(amt)}</td></tr>`;
         let total=allContribs.reduce((s,c)=>s+c.amount,0);
         let invId="ALL-"+Math.floor(Math.random()*10000);
-        return `<div id="allMembersReport" class="a4-statement"><div class="statement-header"><div><h2>LINAKHA FAMILY</h2><p>Event Contribution Report - All Members</p></div><div><strong>#${invId}</strong><br>${new Date().toLocaleDateString()}</div></div><div class="info-rounded"><div class="info-chip"><strong>Event</strong><span>${toTitle(eventObj.name)}</span></div><div class="info-chip"><strong>Target</strong><span>${formatKES(eventObj.target)}</span></div><div class="info-chip"><strong>Total Collected</strong><span>${formatKES(total)}</span></div></div><table class="invoice-table-a4"><thead><tr><th>Member Name</th><th>Total Contribution (KES)</th></tr></thead><tbody>${rows}</tbody></table><div class="total-glam"><strong>GRAND TOTAL: ${formatKES(total)}</strong></div><div class="footer-signature"><span><i class="fas fa-phone"></i> +254112598008 | linakha.family</span><span>Thank you for your contribution, let's grow together.</span></div></div>`;
+        return `<div id="allMembersReport" style="background:white; padding:2rem; border-radius:28px; width:210mm; max-width:100%;"><div class="statement-header"><div><h2>LINAKHA FAMILY</h2><p>Event Contribution Report - All Members</p></div><div><strong>#${invId}</strong><br>${new Date().toLocaleDateString()}</div></div><div class="info-rounded"><div class="info-chip"><strong>Event</strong><span>${toTitle(eventObj.name)}</span></div><div class="info-chip"><strong>Target</strong><span>${formatKES(eventObj.target)}</span></div><div class="info-chip"><strong>Total Collected</strong><span>${formatKES(total)}</span></div></div><table class="invoice-table-a4"><thead><tr><th>Member Name</th><th>Total Contribution (KES)</th></tr></thead><tbody>${rows}</tbody></table><div class="total-glam"><strong>GRAND TOTAL: ${formatKES(total)}</strong></div><div class="footer-signature"><span><i class="fas fa-phone"></i> +254112598008 | linakha.family</span><span>Thank you for your contribution, let's grow together.</span></div></div>`;
     }
     document.getElementById("generateAllMembersReportBtn").onclick = () => { let eid=parseInt(document.getElementById("allMembersEventSelect").value); if(!eid) return alert("Select an event"); let reportHtml=generateAllMembersReport(eid); document.getElementById("allMembersReportPreview").innerHTML=reportHtml; let el=document.getElementById("allMembersReport"); if(el) html2pdf().set({margin:[0.5,0.5,0.5,0.5], filename:`AllMembers_${getEventName(eid)}.pdf`, jsPDF:{unit:'in', format:'a4'}}).from(el).save(); };
+    document.getElementById("generateAllMembersReportPngBtn").onclick = async () => { let eid=parseInt(document.getElementById("allMembersEventSelect").value); if(!eid) return alert("Select an event"); let reportHtml=generateAllMembersReport(eid); document.getElementById("allMembersReportPreview").innerHTML=reportHtml; let el=document.getElementById("allMembersReport"); if(el) await exportAsPng(el, `AllMembers_${getEventName(eid)}.png`); };
     
     // Navigation and UI
     document.querySelectorAll(".shortcut-btn, .nav-item").forEach(btn=>{ btn.addEventListener("click",()=>{ let page=btn.getAttribute("data-page"); if(!page && btn.classList.contains("shortcut-btn")) page=btn.getAttribute("data-nav"); if(page){ document.querySelectorAll(".page").forEach(p=>p.style.display="none"); document.getElementById(`${page}Page`).style.display="block"; document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("active")); let activeNav=document.querySelector(`.nav-item[data-page="${page}"]`); if(activeNav) activeNav.classList.add("active"); if(window.innerWidth<=800) document.getElementById("sidebar").classList.remove("mobile-open"); } }); });
     const sidebar=document.getElementById("sidebar"); document.getElementById("collapseToggle").onclick = () => { sidebar.classList.toggle("collapsed"); const icon=document.querySelector("#collapseToggle i"); if(sidebar.classList.contains("collapsed")) icon.classList.replace("fa-chevron-left","fa-chevron-right"); else icon.classList.replace("fa-chevron-right","fa-chevron-left"); };
     document.getElementById("logoutBtnSide").onclick = () => { document.getElementById("appContainer").style.display="none"; document.getElementById("loginOverlay").style.display="flex"; };
+    // Login with empty fields by default
     document.getElementById("doLoginBtn").onclick = () => { let user=document.getElementById("loginUsername").value, pwd=document.getElementById("loginPassword").value; if(user==="admin" && pwd===currentPassword){ document.getElementById("loginOverlay").style.display="none"; document.getElementById("appContainer").style.display="block"; } else alert("Invalid credentials"); };
     let pwdModal=document.getElementById("changePwdModal"); document.getElementById("changePwdLink").onclick = () => pwdModal.classList.add("active"); document.getElementById("closePwdModal").onclick = () => pwdModal.classList.remove("active");
-    document.getElementById("savePwdBtn").onclick = () => { let cur=document.getElementById("currentPwd").value, newp=document.getElementById("newPwd").value, conf=document.getElementById("confirmPwd").value; if(cur!==currentPassword) alert("Current password incorrect"); else if(newp!==conf) alert("Passwords do not match"); else if(newp.length<4) alert("Password too short"); else{ currentPassword=newp; alert("Password changed!"); pwdModal.classList.remove("active"); document.getElementById("loginPassword").value=newp; } };
+    document.getElementById("savePwdBtn").onclick = () => { let cur=document.getElementById("currentPwd").value, newp=document.getElementById("newPwd").value, conf=document.getElementById("confirmPwd").value; if(cur!==currentPassword) alert("Current password incorrect"); else if(newp!==conf) alert("Passwords do not match"); else if(newp.length<4) alert("Password too short"); else{ currentPassword=newp; alert("Password changed!"); pwdModal.classList.remove("active"); } };
     document.getElementById("mobileMenuToggle").onclick = () => { sidebar.classList.toggle("mobile-open"); };
     
     // Start app
