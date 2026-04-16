@@ -148,7 +148,7 @@
         .modal {
             position: fixed; top:0; left:0; width:100%; height:100%;
             background: rgba(0,0,0,0.5); backdrop-filter: blur(4px);
-            display: flex; align-items: center; justify-content: center;
+            display: flex; align-items: center; justifyify-content: center;
             z-index: 1500; visibility: hidden; opacity: 0; transition: 0.2s;
         }
         .modal.active { visibility: visible; opacity: 1; }
@@ -166,21 +166,88 @@
         .member-row { cursor: pointer; transition: 0.1s; }
         .member-row:hover { background: #f5f7fb; }
         
-        /* A4 styles for preview */
-        .a4-statement, .summary-card { background: white; padding: 1.5rem; border-radius: 24px; }
-        .statement-header { display: flex; justify-content: space-between; border-bottom: 2px solid var(--primary); padding-bottom: 0.8rem; margin-bottom: 1rem; flex-wrap: wrap; }
-        .statement-header h2 { font-size: 1.3rem; }
-        .info-rounded { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 1.5rem; }
-        .info-chip { background: #F2F5FB; border-radius: 28px; padding: 10px 18px; flex: 1; min-width: 120px; }
-        .info-chip strong { font-size: 10px; display: block; }
-        .info-chip span { font-size: 14px; font-weight: 700; }
-        .invoice-table-a4 { width: 100%; border-collapse: collapse; }
-        .invoice-table-a4 th { background: #EBF0F8; padding: 10px; font-size: 12px; border: 1px solid #ddd; }
-        .invoice-table-a4 td { padding: 8px; font-size: 11px; }
-        .total-glam { background: #F2F6FF; border-radius: 28px; padding: 0.8rem 1.2rem; text-align: right; margin-top: 1rem; border-right: 5px solid var(--accent); }
-        .footer-signature { margin-top: 1.5rem; display: flex; justify-content: space-between; border-top: 1px dashed #ccc; padding-top: 1rem; font-size: 9px; flex-wrap: wrap; }
-        .preview-area { background: #fefefe; border-radius: 24px; padding: 1rem; margin-top: 1rem; border: 1px solid #eef2f8; overflow-x: auto; }
-        .document-actions { display: flex; gap: 8px; margin: 12px 0; flex-wrap: wrap; }
+        /* A4 styles for preview and download - improved design */
+        .print-document {
+            background: white;
+            padding: 2rem;
+            border-radius: 28px;
+            font-family: 'Inter', 'Poppins', sans-serif;
+            max-width: 210mm;
+            margin: 0 auto;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .statement-header {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 3px solid var(--primary);
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .statement-header h2 { font-size: 28px; font-weight: 800; color: var(--primary); }
+        .info-rounded {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 28px;
+        }
+        .info-chip {
+            background: #F2F5FB;
+            border-radius: 32px;
+            padding: 12px 24px;
+            flex: 1;
+            min-width: 140px;
+        }
+        .info-chip strong { font-size: 10px; text-transform: uppercase; color: #10367D; display: block; }
+        .info-chip span { font-size: 16px; font-weight: 700; }
+        .invoice-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+        .invoice-table th {
+            background: #EBF0F8;
+            padding: 12px;
+            font-size: 13px;
+            font-weight: 800;
+            border: 1px solid #ddd;
+        }
+        .invoice-table td {
+            padding: 10px;
+            font-size: 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .total-glam {
+            background: #F2F6FF;
+            border-radius: 36px;
+            padding: 1rem 2rem;
+            text-align: right;
+            margin-top: 1rem;
+            border-right: 8px solid var(--accent);
+        }
+        .footer-signature {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: space-between;
+            border-top: 2px dashed #cbd5e1;
+            padding-top: 1.2rem;
+            font-size: 10px;
+            flex-wrap: wrap;
+        }
+        .preview-area {
+            background: #fefefe;
+            border-radius: 24px;
+            padding: 1rem;
+            margin-top: 1rem;
+            border: 1px solid #eef2f8;
+            overflow-x: auto;
+        }
+        .document-actions {
+            display: flex;
+            gap: 8px;
+            margin: 12px 0;
+            flex-wrap: wrap;
+        }
         
         /* Desktop styles */
         @media (min-width: 768px) {
@@ -302,17 +369,17 @@
     
     function renderMembersList() {
         let filtered = members.filter(m=>{ if(showInactiveOnly && m.status!=="inactive") return false; if(document.getElementById("searchMemberInput")?.value && !m.name.toLowerCase().includes(document.getElementById("searchMemberInput").value.toLowerCase())) return false; return true; });
-        let html=`<table><thead><tr><th>Name</th><th>Role</th><th>Status</th><th>Total</th><th></th></tr></thead><tbody>`;
-        filtered.forEach(m=>{ let total=contributions.filter(c=>c.memberId===m.id).reduce((s,c)=>s+c.amount,0); html+=`<tr class="member-row" onclick="showMemberDetails(${m.id})"><td>${m.name} ${m.role==='Treasurer'?'👑':''}</td><td>${m.role}</td><td><span class="badge">${m.status}</span></td><td>${formatKES(total)}</td><td><button class="icon-btn" onclick="event.stopPropagation();editMember(${m.id})"><i class="fas fa-edit"></i></button><button class="icon-btn" onclick="event.stopPropagation();toggleMemberStatus(${m.id})"><i class="fas fa-exchange-alt"></i></button><button class="icon-btn" onclick="event.stopPropagation();deleteMember(${m.id})"><i class="fas fa-trash"></i></button></td></tr>`; });
+        let html=`<table class="members-table"><thead><tr><th>Name</th><th>Role</th><th>Status</th><th>Total</th><th></th></tr></thead><tbody>`;
+        filtered.forEach(m=>{ let total=contributions.filter(c=>c.memberId===m.id).reduce((s,c)=>s+c.amount,0); html+=`<tr class="member-row" onclick="showMemberDetails(${m.id})"><td>${m.name} ${m.role==='Treasurer'?'👑':''}${m.role}</td><td><span class="badge">${m.status}</span></td><td>${formatKES(total)}</td><td><button class="icon-btn" onclick="event.stopPropagation();editMember(${m.id})"><i class="fas fa-edit"></i></button><button class="icon-btn" onclick="event.stopPropagation();toggleMemberStatus(${m.id})"><i class="fas fa-exchange-alt"></i></button><button class="icon-btn" onclick="event.stopPropagation();deleteMember(${m.id})"><i class="fas fa-trash"></i></button></td></tr>`; });
         html+=`</tbody></table>`; document.getElementById("membersListDiv").innerHTML = html;
     }
     
     function renderEventsList() {
         let search = document.getElementById("searchEventInput")?.value || "";
         let filtered = events.filter(e=>search?e.name.toLowerCase().includes(search.toLowerCase()):true);
-        let html=`<table><thead><tr><th>Event</th><th>Target</th><th>Collected</th><th></th></tr></thead><tbody>`;
+        let html=`<table class="events-table"><thead><tr><th>Event</th><th>Target</th><th>Collected</th><th></th></tr></thead><tbody>`;
         filtered.forEach(e=>{ let total=contributions.filter(c=>c.eventId===e.id).reduce((s,c)=>s+c.amount,0); html+=`<tr><td><i class="fas fa-calendar-alt"></i> ${toTitle(e.name)}</td><td>${formatKES(e.target)}</td><td>${formatKES(total)}</td><td><button class="icon-btn" onclick="editEvent(${e.id})"><i class="fas fa-edit"></i></button><button class="icon-btn" onclick="deleteEvent(${e.id})"><i class="fas fa-trash"></i></button></td></tr>`; });
-        html+=`</tbody><table>`; document.getElementById("eventsListDiv").innerHTML = html;
+        html+=`</tbody></table>`; document.getElementById("eventsListDiv").innerHTML = html;
     }
     
     function renderContributionSelectors() {
@@ -326,11 +393,11 @@
         if(eventStmtEvent) eventStmtEvent.innerHTML=events.map(e=>`<option value="${e.id}">${toTitle(e.name)}</option>`).join("");
     }
     
-    function renderContributionTable() { let sel=document.getElementById("eventSummarySelect"); if(!sel||!sel.value) return; let eventId=parseInt(sel.value); let filtered=contributions.filter(c=>c.eventId===eventId).sort((a,b)=>new Date(a.date)-new Date(b.date)); let html=`<h4>${toTitle(getEventName(eventId))} - Transactions</h4><div class="table-wrapper"><table><thead><tr><th>Date</th><th>Member</th><th>Amount</th></tr></thead><tbody>`; filtered.forEach(c=>html+=`<tr><td>${c.date}</td><td>${getMemberName(c.memberId)}</td><td>${formatKES(c.amount)}</td></tr>`); html+=`</tbody></table></div>`; document.getElementById("contributionTableView").innerHTML=html; }
+    function renderContributionTable() { let sel=document.getElementById("eventSummarySelect"); if(!sel||!sel.value) return; let eventId=parseInt(sel.value); let filtered=contributions.filter(c=>c.eventId===eventId).sort((a,b)=>new Date(a.date)-new Date(b.date)); let html=`<h4>${toTitle(getEventName(eventId))} - Transactions</h4><div class="table-wrapper"><table class="transaction-table"><thead><tr><th>Date</th><th>Member</th><th>Amount</th></tr></thead><tbody>`; filtered.forEach(c=>html+=`<tr><td>${c.date}</td><td>${getMemberName(c.memberId)}</td><td>${formatKES(c.amount)}</td></tr>`); html+=`</tbody></table></div>`; document.getElementById("contributionTableView").innerHTML=html; }
     
     function renderRecentTable() {
         let recent=[...contributions].reverse().slice(0,6);
-        let html=`<div class="table-wrapper"><table><thead><tr><th>Date</th><th>Member</th><th>Event</th><th>Amount</th></tr></thead><tbody>`;
+        let html=`<div class="table-wrapper"><table class="recent-table"><thead><tr><th>Date</th><th>Member</th><th>Event</th><th>Amount</th></tr></thead><tbody>`;
         recent.forEach(c=>html+=`<tr><td>${c.date}</td><td>${getMemberName(c.memberId)}</td><td>${toTitle(getEventName(c.eventId))}</td><td>${formatKES(c.amount)}</td></tr>`);
         html+=`</tbody></table></div>`; document.getElementById("recentTable").innerHTML=html;
     }
@@ -386,32 +453,60 @@
     document.getElementById("eventSummarySelect").onchange = () => renderContributionTable();
     document.getElementById("toggleInactiveFilter").onclick = () => { showInactiveOnly=!showInactiveOnly; renderMembersList(); };
     
-    async function exportAsPng(element, filename) { if(!element) return; element.style.width = "210mm"; element.style.maxWidth = "210mm"; const canvas = await html2canvas(element, { scale: 3, backgroundColor: '#ffffff' }); element.style.width = ""; element.style.maxWidth = ""; const link = document.createElement('a'); link.download = filename; link.href = canvas.toDataURL('image/png'); link.click(); }
+    // Helper to download PDF with proper positioning (scroll to top, then capture)
+    async function downloadPDF(element, filename) {
+        if(!element) return;
+        // Ensure element is visible and scrolled into view
+        element.scrollIntoView({ behavior: 'auto', block: 'start' });
+        // Small delay to ensure rendering
+        await new Promise(r => setTimeout(r, 100));
+        const opt = {
+            margin: [0.5, 0.5, 0.5, 0.5],
+            filename: filename,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, letterRendering: true, useCORS: true },
+            jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+        };
+        html2pdf().set(opt).from(element).save();
+    }
     
+    async function exportAsPng(element, filename) {
+        if(!element) return;
+        element.scrollIntoView({ behavior: 'auto', block: 'start' });
+        await new Promise(r => setTimeout(r, 100));
+        const canvas = await html2canvas(element, { scale: 3, backgroundColor: '#ffffff', logging: false });
+        const link = document.createElement('a');
+        link.download = filename;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+    }
+    
+    // ========== DOCUMENT GENERATORS ==========
     function generateSummaryCard(eventId) {
         let eventObj=events.find(e=>e.id===eventId); if(!eventObj) return null;
         let eventContribs=contributions.filter(c=>c.eventId===eventId);
         let memberTotals={}; eventContribs.forEach(c=>{ memberTotals[c.memberId]=(memberTotals[c.memberId]||0)+c.amount; });
         let totalEvent=eventContribs.reduce((s,c)=>s+c.amount,0);
         let rows=''; for(let mid in memberTotals) rows+=`<tr><td>${getMemberName(parseInt(mid))}</td><td style="text-align:right;">${formatKES(memberTotals[mid])}</td></tr>`;
-        return `<div id="summaryCard" style="background:white; padding:1rem; border-radius:24px;"><div style="display:flex; justify-content:space-between; flex-wrap:wrap;"><h2 style="color:#10367D;">${toTitle(eventObj.name)}</h2><span>${new Date().toLocaleDateString()}</span></div><div style="display:flex; gap:12px; margin:15px 0; flex-wrap:wrap;"><div style="background:#F2F5FB; padding:8px 16px; border-radius:24px;"><strong>Total Collected</strong><br>${formatKES(totalEvent)}</div><div style="background:#F2F5FB; padding:8px 16px; border-radius:24px;"><strong>Target</strong><br>${formatKES(eventObj.target)}</div></div><div class="table-wrapper"><table style="width:100%;"><thead><tr><th>Member</th><th>Total (KES)</th></tr></thead><tbody>${rows}</tbody></table></div><div class="total-glam"><strong>Grand Total: ${formatKES(totalEvent)}</strong></div><div style="text-align:center; margin-top:15px; font-style:italic;">Thank you for your contribution, let's grow together.</div><div style="margin-top:12px; font-size:10px; text-align:center;">📞 +254112598008 | Linakha Family</div></div>`;
+        return `<div id="summaryCard" class="print-document"><div class="statement-header"><div><h2>LINAKHA FAMILY</h2><p>Event Contribution Summary</p></div><div><strong>${toTitle(eventObj.name)}</strong><br>${new Date().toLocaleDateString()}</div></div><div class="info-rounded"><div class="info-chip"><strong>Total Collected</strong><span>${formatKES(totalEvent)}</span></div><div class="info-chip"><strong>Target</strong><span>${formatKES(eventObj.target)}</span></div></div><table class="invoice-table"><thead><tr><th>Member Name</th><th>Total Contribution (KES)</th></tr></thead><tbody>${rows}</tbody></table><div class="total-glam"><strong>GRAND TOTAL: ${formatKES(totalEvent)}</strong></div><div class="footer-signature"><span><i class="fas fa-phone"></i> +254112598008 | linakha.family</span><span>Thank you for your contribution, let's grow together.</span></div></div>`;
     }
     document.getElementById("previewSummaryBtn").onclick = () => { let eid=parseInt(document.getElementById("eventSummarySelect").value); if(eid) document.getElementById("summaryPreviewArea").innerHTML=generateSummaryCard(eid)||"<p>No contributions yet.</p>"; else alert("Select an event"); };
-    document.getElementById("exportSummaryPdfBtn").onclick = () => { let eid=parseInt(document.getElementById("eventSummarySelect").value); if(eid){ let html=generateSummaryCard(eid); if(html){ document.getElementById("summaryPreviewArea").innerHTML=html; let el=document.getElementById("summaryCard"); if(el) html2pdf().set({margin:[0.5,0.5,0.5,0.5], filename:`Event_Summary.pdf`, jsPDF:{unit:'in', format:'a4'}}).from(el).save(); } } else alert("Select event"); };
+    document.getElementById("exportSummaryPdfBtn").onclick = async () => { let eid=parseInt(document.getElementById("eventSummarySelect").value); if(eid){ let html=generateSummaryCard(eid); if(html){ document.getElementById("summaryPreviewArea").innerHTML=html; let el=document.getElementById("summaryCard"); if(el) await downloadPDF(el, `Event_Summary.pdf`); } } else alert("Select event"); };
     document.getElementById("exportSummaryPngBtn").onclick = async () => { let eid=parseInt(document.getElementById("eventSummarySelect").value); if(eid){ let html=generateSummaryCard(eid); document.getElementById("summaryPreviewArea").innerHTML=html; let el=document.getElementById("summaryCard"); if(el) await exportAsPng(el, `Event_Summary.png`); } else alert("Select event"); };
     document.getElementById("exportSummaryExcelBtn").onclick = () => { let eid=parseInt(document.getElementById("eventSummarySelect").value); if(eid){ let contribs=contributions.filter(c=>c.eventId===eid); let memberTotals={}; contribs.forEach(c=>{ memberTotals[c.memberId]=(memberTotals[c.memberId]||0)+c.amount; }); let data=Object.keys(memberTotals).map(mid=>({ Member: getMemberName(parseInt(mid)), Total_KES: memberTotals[mid] })); let ws=XLSX.utils.json_to_sheet(data); let wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "Summary"); XLSX.writeFile(wb, `Event_Summary.xlsx`); } else alert("Select event"); };
     
-    function generateA4Statement(memberId, fromDate, toDate) {
+    function generateMemberStatement(memberId, fromDate, toDate) {
         let member=members.find(m=>m.id===memberId);
         let filtered=contributions.filter(c=>c.memberId===memberId && c.date>=fromDate && c.date<=toDate).sort((a,b)=>new Date(a.date)-new Date(b.date));
         let eventMap={}; filtered.forEach(c=>{ eventMap[c.eventId]=(eventMap[c.eventId]||0)+c.amount; });
         let totalAmount=filtered.reduce((s,c)=>s+c.amount,0);
         let invId="LNH-"+Math.floor(Math.random()*10000);
-        return `<div id="statementA4" style="background:white; padding:1rem; border-radius:24px;"><div class="statement-header"><div><h2>LINAKHA FAMILY</h2><p>Financial Statement</p></div><div><strong>#${invId}</strong><br>${new Date().toLocaleDateString()}</div></div><div class="info-rounded"><div class="info-chip"><strong>Member</strong><span>${member.name}</span></div><div class="info-chip"><strong>Period</strong><span>${fromDate} to ${toDate}</span></div><div class="info-chip"><strong>Status</strong><span>${member.status}</span></div></div><div class="table-wrapper"><table class="invoice-table-a4"><thead><tr><th>DATE</th><th>EVENT</th><th>AMOUNT (KES)</th></tr></thead><tbody>${filtered.map(c=>`<tr><td>${c.date}</td><td>${toTitle(getEventName(c.eventId))}</td><td style="text-align:right;">${formatKES(c.amount)}</td><tr>`).join('')}</tbody></table></div><div style="background:#F9FCFE; border-radius:20px; padding:0.8rem; margin:0.8rem 0;"><strong>Event Summary</strong><div class="table-wrapper"><table style="width:100%;">${Object.keys(eventMap).map(eid=>`<tr><td>${toTitle(getEventName(parseInt(eid)))}</td><td style="text-align:right;">${formatKES(eventMap[eid])}</td></tr>`).join('')}</table></div></div><div class="total-glam"><strong>TOTAL CONTRIBUTION: ${formatKES(totalAmount)}</strong></div><div class="footer-signature"><span><i class="fas fa-phone"></i> +254112598008 | linakha.family</span><span>Thank you for your contribution, let's grow together.</span></div></div>`;
+        let eventsRows=''; for(let eid in eventMap) eventsRows+=`<tr><td>${toTitle(getEventName(parseInt(eid)))}</td><td style="text-align:right;">${formatKES(eventMap[eid])}</td></tr>`;
+        return `<div id="statementA4" class="print-document"><div class="statement-header"><div><h2>LINAKHA FAMILY</h2><p>Financial Statement</p></div><div><strong>#${invId}</strong><br>${new Date().toLocaleDateString()}</div></div><div class="info-rounded"><div class="info-chip"><strong>Member</strong><span>${member.name}</span></div><div class="info-chip"><strong>Period</strong><span>${fromDate} to ${toDate}</span></div><div class="info-chip"><strong>Status</strong><span>${member.status}</span></div></div><table class="invoice-table"><thead><tr><th>DATE</th><th>EVENT</th><th>AMOUNT (KES)</th></tr></thead><tbody>${filtered.map(c=>`<tr><td>${c.date}</td><td>${toTitle(getEventName(c.eventId))}</td><td style="text-align:right;">${formatKES(c.amount)}</td></tr>`).join('')}</tbody></table><div class="info-chip" style="margin:1rem 0;"><strong>Event Summary</strong><table style="width:100%; margin-top:8px;">${eventsRows}</table></div><div class="total-glam"><strong>TOTAL CONTRIBUTION: ${formatKES(totalAmount)}</strong></div><div class="footer-signature"><span><i class="fas fa-phone"></i> +254112598008 | linakha.family</span><span>Thank you for your contribution, let's grow together.</span></div></div>`;
     }
-    document.getElementById("previewStmtBtn").onclick = () => { let mid=parseInt(document.getElementById("stmtMemberSel").value), from=document.getElementById("stmtFromDate").value, to=document.getElementById("stmtToDate").value; if(mid&&from&&to) document.getElementById("statementPreviewArea").innerHTML=generateA4Statement(mid,from,to); else alert("Select member and dates"); };
-    document.getElementById("downloadStmtBtn").onclick = () => { let mid=parseInt(document.getElementById("stmtMemberSel").value), from=document.getElementById("stmtFromDate").value, to=document.getElementById("stmtToDate").value; if(mid&&from&&to){ document.getElementById("statementPreviewArea").innerHTML=generateA4Statement(mid,from,to); let el=document.getElementById("statementA4"); if(el) html2pdf().set({margin:[0.5,0.5,0.5,0.5], filename:`Statement_${getMemberName(mid)}.pdf`, jsPDF:{unit:'in', format:'a4'}}).from(el).save(); } else alert("Select member and dates"); };
-    document.getElementById("downloadStmtPngBtn").onclick = async () => { let mid=parseInt(document.getElementById("stmtMemberSel").value), from=document.getElementById("stmtFromDate").value, to=document.getElementById("stmtToDate").value; if(mid&&from&&to){ document.getElementById("statementPreviewArea").innerHTML=generateA4Statement(mid,from,to); let el=document.getElementById("statementA4"); if(el) await exportAsPng(el, `Statement_${getMemberName(mid)}.png`); } else alert("Select member and dates"); };
+    document.getElementById("previewStmtBtn").onclick = () => { let mid=parseInt(document.getElementById("stmtMemberSel").value), from=document.getElementById("stmtFromDate").value, to=document.getElementById("stmtToDate").value; if(mid&&from&&to) document.getElementById("statementPreviewArea").innerHTML=generateMemberStatement(mid,from,to); else alert("Select member and dates"); };
+    document.getElementById("downloadStmtBtn").onclick = async () => { let mid=parseInt(document.getElementById("stmtMemberSel").value), from=document.getElementById("stmtFromDate").value, to=document.getElementById("stmtToDate").value; if(mid&&from&&to){ document.getElementById("statementPreviewArea").innerHTML=generateMemberStatement(mid,from,to); let el=document.getElementById("statementA4"); if(el) await downloadPDF(el, `Statement_${getMemberName(mid)}.pdf`); } else alert("Select member and dates"); };
+    document.getElementById("downloadStmtPngBtn").onclick = async () => { let mid=parseInt(document.getElementById("stmtMemberSel").value), from=document.getElementById("stmtFromDate").value, to=document.getElementById("stmtToDate").value; if(mid&&from&&to){ document.getElementById("statementPreviewArea").innerHTML=generateMemberStatement(mid,from,to); let el=document.getElementById("statementA4"); if(el) await exportAsPng(el, `Statement_${getMemberName(mid)}.png`); } else alert("Select member and dates"); };
     
     function generateEventStatement(memberId, eventId) {
         let member=members.find(m=>m.id===memberId);
@@ -419,10 +514,10 @@
         let filtered=contributions.filter(c=>c.memberId===memberId && c.eventId===eventId).sort((a,b)=>new Date(a.date)-new Date(b.date));
         let totalAmount=filtered.reduce((s,c)=>s+c.amount,0);
         let invId="EVT-"+Math.floor(Math.random()*10000);
-        return `<div id="eventStatementA4" style="background:white; padding:1rem; border-radius:24px;"><div class="statement-header"><div><h2>LINAKHA FAMILY</h2><p>Event Contribution Statement</p></div><div><strong>#${invId}</strong><br>${new Date().toLocaleDateString()}</div></div><div class="info-rounded"><div class="info-chip"><strong>Member</strong><span>${member.name}</span></div><div class="info-chip"><strong>Event</strong><span>${toTitle(event.name)}</span></div><div class="info-chip"><strong>Target</strong><span>${formatKES(event.target)}</span></div></div><div class="table-wrapper"><table class="invoice-table-a4"><thead><tr><th>DATE</th><th>AMOUNT (KES)</th></tr></thead><tbody>${filtered.map(c=>`<tr><td>${c.date}</td><td style="text-align:right;">${formatKES(c.amount)}<td></tr>`).join('')}</tbody></table></div><div class="total-glam"><strong>TOTAL CONTRIBUTION: ${formatKES(totalAmount)}</strong></div><div class="footer-signature"><span><i class="fas fa-phone"></i> +254112598008 | linakha.family</span><span>Thank you for your contribution, let's grow together.</span></div></div>`;
+        return `<div id="eventStatementA4" class="print-document"><div class="statement-header"><div><h2>LINAKHA FAMILY</h2><p>Event Contribution Statement</p></div><div><strong>#${invId}</strong><br>${new Date().toLocaleDateString()}</div></div><div class="info-rounded"><div class="info-chip"><strong>Member</strong><span>${member.name}</span></div><div class="info-chip"><strong>Event</strong><span>${toTitle(event.name)}</span></div><div class="info-chip"><strong>Target</strong><span>${formatKES(event.target)}</span></div></div><table class="invoice-table"><thead><tr><th>DATE</th><th>AMOUNT (KES)</th></tr></thead><tbody>${filtered.map(c=>`<tr><td>${c.date}</td><td style="text-align:right;">${formatKES(c.amount)}</td></tr>`).join('')}</tbody></table><div class="total-glam"><strong>TOTAL CONTRIBUTION: ${formatKES(totalAmount)}</strong></div><div class="footer-signature"><span><i class="fas fa-phone"></i> +254112598008 | linakha.family</span><span>Thank you for your contribution, let's grow together.</span></div></div>`;
     }
     document.getElementById("previewEventStmtBtn").onclick = () => { let mid=parseInt(document.getElementById("eventStmtMemberSel").value), eid=parseInt(document.getElementById("eventStmtEventSel").value); if(mid&&eid) document.getElementById("eventStatementPreviewArea").innerHTML=generateEventStatement(mid,eid); else alert("Select member and event"); };
-    document.getElementById("downloadEventStmtBtn").onclick = () => { let mid=parseInt(document.getElementById("eventStmtMemberSel").value), eid=parseInt(document.getElementById("eventStmtEventSel").value); if(mid&&eid){ document.getElementById("eventStatementPreviewArea").innerHTML=generateEventStatement(mid,eid); let el=document.getElementById("eventStatementA4"); if(el) html2pdf().set({margin:[0.5,0.5,0.5,0.5], filename:`${getMemberName(mid)}_${getEventName(eid)}.pdf`, jsPDF:{unit:'in', format:'a4'}}).from(el).save(); } else alert("Select member and event"); };
+    document.getElementById("downloadEventStmtBtn").onclick = async () => { let mid=parseInt(document.getElementById("eventStmtMemberSel").value), eid=parseInt(document.getElementById("eventStmtEventSel").value); if(mid&&eid){ document.getElementById("eventStatementPreviewArea").innerHTML=generateEventStatement(mid,eid); let el=document.getElementById("eventStatementA4"); if(el) await downloadPDF(el, `${getMemberName(mid)}_${getEventName(eid)}.pdf`); } else alert("Select member and event"); };
     document.getElementById("downloadEventStmtPngBtn").onclick = async () => { let mid=parseInt(document.getElementById("eventStmtMemberSel").value), eid=parseInt(document.getElementById("eventStmtEventSel").value); if(mid&&eid){ document.getElementById("eventStatementPreviewArea").innerHTML=generateEventStatement(mid,eid); let el=document.getElementById("eventStatementA4"); if(el) await exportAsPng(el, `${getMemberName(mid)}_${getEventName(eid)}.png`); } else alert("Select member and event"); };
     
     function generateAllMembersReport(eventId) {
@@ -432,9 +527,9 @@
         let rows=''; for(let [mid,amt] of memberMap) rows+=`<tr><td>${getMemberName(mid)}</td><td style="text-align:right;">${formatKES(amt)}</td></tr>`;
         let total=allContribs.reduce((s,c)=>s+c.amount,0);
         let invId="ALL-"+Math.floor(Math.random()*10000);
-        return `<div id="allMembersReport" style="background:white; padding:1rem; border-radius:24px;"><div class="statement-header"><div><h2>LINAKHA FAMILY</h2><p>Event Contribution Report - All Members</p></div><div><strong>#${invId}</strong><br>${new Date().toLocaleDateString()}</div></div><div class="info-rounded"><div class="info-chip"><strong>Event</strong><span>${toTitle(eventObj.name)}</span></div><div class="info-chip"><strong>Target</strong><span>${formatKES(eventObj.target)}</span></div><div class="info-chip"><strong>Total Collected</strong><span>${formatKES(total)}</span></div></div><div class="table-wrapper"><table class="invoice-table-a4"><thead><tr><th>Member Name</th><th>Total Contribution (KES)</th></tr></thead><tbody>${rows}</tbody></table></div><div class="total-glam"><strong>GRAND TOTAL: ${formatKES(total)}</strong></div><div class="footer-signature"><span><i class="fas fa-phone"></i> +254112598008 | linakha.family</span><span>Thank you for your contribution, let's grow together.</span></div></div>`;
+        return `<div id="allMembersReport" class="print-document"><div class="statement-header"><div><h2>LINAKHA FAMILY</h2><p>Event Contribution Report - All Members</p></div><div><strong>#${invId}</strong><br>${new Date().toLocaleDateString()}</div></div><div class="info-rounded"><div class="info-chip"><strong>Event</strong><span>${toTitle(eventObj.name)}</span></div><div class="info-chip"><strong>Target</strong><span>${formatKES(eventObj.target)}</span></div><div class="info-chip"><strong>Total Collected</strong><span>${formatKES(total)}</span></div></div><table class="invoice-table"><thead><tr><th>Member Name</th><th>Total Contribution (KES)</th></tr></thead><tbody>${rows}</tbody></table><div class="total-glam"><strong>GRAND TOTAL: ${formatKES(total)}</strong></div><div class="footer-signature"><span><i class="fas fa-phone"></i> +254112598008 | linakha.family</span><span>Thank you for your contribution, let's grow together.</span></div></div>`;
     }
-    document.getElementById("generateAllMembersReportBtn").onclick = () => { let eid=parseInt(document.getElementById("allMembersEventSelect").value); if(!eid) return alert("Select an event"); let reportHtml=generateAllMembersReport(eid); document.getElementById("allMembersReportPreview").innerHTML=reportHtml; let el=document.getElementById("allMembersReport"); if(el) html2pdf().set({margin:[0.5,0.5,0.5,0.5], filename:`AllMembers_${getEventName(eid)}.pdf`, jsPDF:{unit:'in', format:'a4'}}).from(el).save(); };
+    document.getElementById("generateAllMembersReportBtn").onclick = async () => { let eid=parseInt(document.getElementById("allMembersEventSelect").value); if(!eid) return alert("Select an event"); let reportHtml=generateAllMembersReport(eid); document.getElementById("allMembersReportPreview").innerHTML=reportHtml; let el=document.getElementById("allMembersReport"); if(el) await downloadPDF(el, `AllMembers_${getEventName(eid)}.pdf`); };
     document.getElementById("generateAllMembersReportPngBtn").onclick = async () => { let eid=parseInt(document.getElementById("allMembersEventSelect").value); if(!eid) return alert("Select an event"); let reportHtml=generateAllMembersReport(eid); document.getElementById("allMembersReportPreview").innerHTML=reportHtml; let el=document.getElementById("allMembersReport"); if(el) await exportAsPng(el, `AllMembers_${getEventName(eid)}.png`); };
     
     // Navigation
