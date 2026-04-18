@@ -21,7 +21,7 @@
     
     <style>
         /* ============================================
-           PREMIUM DESIGN SYSTEM - POLISHED EDITION
+           PREMIUM DESIGN SYSTEM - PERFECT UI
            ============================================ */
         
         * {
@@ -32,7 +32,6 @@
         }
         
         :root {
-            /* Original Color Palette - Enhanced */
             --primary: #10367D;
             --primary-light: #1a4fa8;
             --primary-dark: #0a265e;
@@ -44,7 +43,6 @@
             --danger: #ef4444;
             --info: #3b82f6;
             
-            /* Neutral Colors */
             --bg-primary: #f0f4fa;
             --bg-secondary: #ffffff;
             --bg-tertiary: #f8fafc;
@@ -54,7 +52,6 @@
             --border-light: #e2e8f0;
             --border-medium: #cbd5e1;
             
-            /* Spacing System */
             --space-xs: 0.5rem;
             --space-sm: 0.75rem;
             --space-md: 1rem;
@@ -63,7 +60,6 @@
             --space-2xl: 3rem;
             --space-3xl: 4rem;
             
-            /* Border Radius */
             --radius-sm: 8px;
             --radius-md: 12px;
             --radius-lg: 16px;
@@ -72,7 +68,6 @@
             --radius-3xl: 48px;
             --radius-full: 9999px;
             
-            /* Shadows */
             --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
             --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
             --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
@@ -81,14 +76,12 @@
             --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
             --shadow-primary: 0 10px 25px -5px rgba(16, 54, 125, 0.25);
             
-            /* Transitions */
             --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
             --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
             --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
             --transition-bounce: 300ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
         
-        /* Dark Mode */
         body.dark {
             --bg-primary: #0f172a;
             --bg-secondary: #1e293b;
@@ -110,7 +103,6 @@
             transition: background-color var(--transition-base), color var(--transition-base);
         }
         
-        /* Animated Background */
         .animated-bg {
             position: fixed;
             top: 0;
@@ -145,38 +137,19 @@
             to { transform: rotate(360deg); }
         }
         
-        /* Animations */
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         
         @keyframes scaleIn {
-            from {
-                opacity: 0;
-                transform: scale(0.9);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
         }
         
         @keyframes slideInRight {
-            from {
-                opacity: 0;
-                transform: translateX(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
         }
         
         @keyframes pulse {
@@ -196,9 +169,9 @@
         .animate-scaleIn {
             animation: scaleIn 0.4s ease-out;
         }
-        
+
         /* ============================================
-           PREMIUM LOGIN SCREEN
+           LOGIN SCREEN
            ============================================ */
         
         .login-overlay {
@@ -385,7 +358,7 @@
             color: var(--primary-dark);
             text-decoration: underline;
         }
-        
+
         /* ============================================
            TOAST NOTIFICATIONS
            ============================================ */
@@ -458,7 +431,7 @@
             font-size: 0.85rem;
             color: var(--text-secondary);
         }
-        
+
         /* ============================================
            MODAL DESIGN
            ============================================ */
@@ -552,9 +525,9 @@
             gap: var(--space-md);
             justify-content: flex-end;
         }
-        
+
         /* ============================================
-           DOCUMENT PREVIEW DESIGN
+           DOCUMENT PREVIEW DESIGN WITH ROUNDED TABLE HEADERS
            ============================================ */
         
         .document-preview {
@@ -639,29 +612,48 @@
             color: var(--primary);
         }
         
+        /* Rounded Table Headers - Each header in separate rounded block */
         .doc-table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0 8px;
             margin: 1.5rem 0;
         }
         
+        .doc-table thead tr {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        
         .doc-table th {
+            flex: 1;
             background: linear-gradient(135deg, var(--primary), var(--primary-light));
             color: white;
-            padding: 1rem;
+            padding: 1rem 1.25rem;
             font-weight: 600;
             text-align: left;
             font-size: 0.85rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .doc-table tbody tr {
+            display: flex;
+            gap: 8px;
         }
         
         .doc-table td {
-            padding: 0.875rem 1rem;
+            flex: 1;
+            padding: 0.875rem 1.25rem;
+            background: #fafbfc;
             border-bottom: 1px solid #e2e8f0;
+            border-radius: var(--radius-md);
         }
         
-        .doc-table tbody tr:hover {
+        .doc-table tbody tr:hover td {
             background: rgba(16, 54, 125, 0.03);
         }
         
@@ -696,7 +688,7 @@
             font-size: 0.75rem;
             color: var(--text-secondary);
         }
-        
+
         /* ============================================
            SIDEBAR
            ============================================ */
@@ -778,7 +770,7 @@
         .nav-item.active i {
             color: white;
         }
-        
+
         /* ============================================
            MAIN CONTENT
            ============================================ */
@@ -805,7 +797,7 @@
             z-index: 99;
             backdrop-filter: blur(10px);
         }
-        
+
         /* ============================================
            DASHBOARD COMPONENTS
            ============================================ */
@@ -903,7 +895,6 @@
             color: var(--danger);
         }
         
-        /* Charts */
         .charts-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -932,7 +923,6 @@
             color: var(--primary);
         }
         
-        /* Cards */
         .card {
             background: var(--bg-secondary);
             border-radius: var(--radius-2xl);
@@ -961,7 +951,6 @@
             gap: var(--space-sm);
         }
         
-        /* Buttons */
         .btn {
             padding: 0.75rem 1.5rem;
             border-radius: var(--radius-xl);
@@ -1028,7 +1017,6 @@
             transform: scale(1.1);
         }
         
-        /* Form Elements */
         .form-group {
             margin-bottom: var(--space-lg);
         }
@@ -1060,7 +1048,6 @@
             background: var(--bg-secondary);
         }
         
-        /* Tables */
         .table-wrapper {
             overflow-x: auto;
             border-radius: var(--radius-lg);
@@ -1097,7 +1084,6 @@
             background: rgba(16, 54, 125, 0.03);
         }
         
-        /* Badges */
         .badge {
             padding: 0.25rem 0.75rem;
             border-radius: var(--radius-full);
@@ -1126,7 +1112,6 @@
             color: var(--info);
         }
         
-        /* Role Badges */
         .role-badge {
             padding: 0.25rem 0.75rem;
             border-radius: var(--radius-full);
@@ -1166,7 +1151,6 @@
             color: var(--text-primary);
         }
         
-        /* Progress Bar */
         .progress-container {
             background: var(--border-light);
             border-radius: var(--radius-full);
@@ -1195,7 +1179,6 @@
             animation: shimmer 2s infinite;
         }
         
-        /* Search Input */
         .search-wrapper {
             position: relative;
             margin-bottom: var(--space-lg);
@@ -1226,7 +1209,6 @@
             box-shadow: 0 0 0 4px rgba(16, 54, 125, 0.1);
         }
         
-        /* Empty State */
         .empty-state {
             text-align: center;
             padding: 4rem 2rem;
@@ -1243,7 +1225,6 @@
             background-clip: text;
         }
         
-        /* Sync Status */
         .sync-status {
             position: fixed;
             bottom: 1rem;
@@ -1269,7 +1250,6 @@
             animation: pulse 1.5s infinite;
         }
         
-        /* Responsive */
         @media (max-width: 768px) {
             .sidebar {
                 transform: translateX(-100%);
@@ -1295,17 +1275,18 @@
             .stats-grid {
                 grid-template-columns: 1fr;
             }
+            
+            .doc-table thead tr,
+            .doc-table tbody tr {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Animated Background -->
     <div class="animated-bg"></div>
-    
-    <!-- Toast Container -->
     <div class="toast-container" id="toastContainer"></div>
     
-    <!-- Loading Overlay -->
     <div id="loadingOverlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 2001; display: flex; align-items: center; justify-content: center; visibility: hidden; opacity: 0; transition: 0.3s;">
         <div style="width: 50px; height: 50px; border: 3px solid rgba(255,255,255,0.3); border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite;"></div>
     </div>
@@ -1382,7 +1363,7 @@
                 <button class="modal-close" onclick="closeModal('reAuthModal')"><i class="fas fa-times"></i></button>
             </div>
             <div class="modal-body">
-                <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">Please enter your password to access the transaction log</p>
+                <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">Please enter your password to continue</p>
                 <div class="input-group">
                     <label class="input-label">Your Password</label>
                     <div class="input-wrapper">
@@ -1398,16 +1379,100 @@
         </div>
     </div>
 
+    <!-- Edit Member Modal -->
+    <div class="modal-overlay" id="editMemberModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-user-edit"></i> Edit Member</h3>
+                <button class="modal-close" onclick="closeModal('editMemberModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editMemberId">
+                <div class="input-group">
+                    <label class="input-label">Full Name</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user"></i>
+                        <input type="text" class="input-field" id="editMemberName" placeholder="Member name">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Status</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-circle"></i>
+                        <select class="input-field" id="editMemberStatus" style="padding-left: 3rem;">
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Role</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-tag"></i>
+                        <select class="input-field" id="editMemberRole" style="padding-left: 3rem;">
+                            <option value="member">Member</option>
+                            <option value="treasurer">Treasurer</option>
+                            <option value="chair">Family Chairperson</option>
+                            <option value="deputy">Deputy Chairperson</option>
+                            <option value="youth">Youth Chairperson</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="saveMemberBtn">Save Changes</button>
+                <button class="btn btn-secondary" onclick="closeModal('editMemberModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Event Modal -->
+    <div class="modal-overlay" id="editEventModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-calendar-edit"></i> Edit Event</h3>
+                <button class="modal-close" onclick="closeModal('editEventModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editEventId">
+                <div class="input-group">
+                    <label class="input-label">Event Name</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-calendar"></i>
+                        <input type="text" class="input-field" id="editEventName" placeholder="Event name">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Target Amount (KES)</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-money-bill"></i>
+                        <input type="number" class="input-field" id="editEventTarget" placeholder="Target amount">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Deadline</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-clock"></i>
+                        <input type="date" class="input-field" id="editEventDeadline">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="saveEventBtn">Save Changes</button>
+                <button class="btn btn-secondary" onclick="closeModal('editEventModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Main Application -->
     <div class="app-container" id="appContainer">
-        <!-- Mobile Top Bar -->
         <div class="mobile-top-bar">
             <button class="btn-icon" id="mobileMenuToggle"><i class="fas fa-bars"></i></button>
             <span style="font-weight: 700; color: var(--primary);">Finance Hub</span>
             <button class="btn-icon" id="themeToggle"><i class="fas fa-moon"></i></button>
         </div>
 
-        <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <div class="sidebar-logo">
@@ -1454,14 +1519,11 @@
             </div>
         </aside>
 
-        <!-- Main Panel -->
         <main class="main-panel">
             <!-- Dashboard Page -->
             <div id="dashboardPage" class="page">
                 <h1 class="page-title">Dashboard</h1>
-                
                 <div class="stats-grid" id="statsContainer"></div>
-                
                 <div class="charts-grid">
                     <div class="chart-card">
                         <div class="chart-header">
@@ -1694,7 +1756,6 @@
         </main>
     </div>
 
-    <!-- Sync Status -->
     <div class="sync-status" id="syncStatus">
         <span class="pulse-dot"></span>
         <span id="syncStatusText">Local Storage</span>
@@ -1702,10 +1763,9 @@
 
     <script>
         // ============================================
-        // FULLY FUNCTIONAL APPLICATION LOGIC
+        // ENHANCED APPLICATION WITH EDIT FUNCTIONALITY
         // ============================================
         
-        // State Management
         let currentUser = null;
         let members = [];
         let events = [];
@@ -1717,12 +1777,10 @@
         let isRegisterMode = false;
         let pendingPage = null;
         
-        // Initialize
         function init() {
             loadData();
             setupEventListeners();
             
-            // Set default dates
             const today = new Date().toISOString().split('T')[0];
             if (document.getElementById('contDate')) document.getElementById('contDate').value = today;
             if (document.getElementById('stmtFromDate')) {
@@ -1780,7 +1838,6 @@
             localStorage.setItem('linakha_users', JSON.stringify(users));
         }
         
-        // Toast System
         function showToast(message, type = 'info') {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
@@ -1793,17 +1850,10 @@
                 info: 'fa-info-circle'
             };
             
-            const titles = {
-                success: 'Success',
-                error: 'Error',
-                warning: 'Warning',
-                info: 'Info'
-            };
+            const titles = { success: 'Success', error: 'Error', warning: 'Warning', info: 'Info' };
             
             toast.innerHTML = `
-                <div class="toast-icon">
-                    <i class="fas ${icons[type]}"></i>
-                </div>
+                <div class="toast-icon"><i class="fas ${icons[type]}"></i></div>
                 <div class="toast-content">
                     <div class="toast-title">${titles[type]}</div>
                     <div class="toast-message">${message}</div>
@@ -1811,14 +1861,12 @@
             `;
             
             container.appendChild(toast);
-            
             setTimeout(() => {
                 toast.style.animation = 'slideInRight 0.3s ease reverse';
                 setTimeout(() => toast.remove(), 300);
             }, 4000);
         }
         
-        // Modal System
         function closeModal(modalId) {
             document.getElementById(modalId).classList.remove('active');
         }
@@ -1827,7 +1875,6 @@
             document.getElementById(modalId).classList.add('active');
         }
         
-        // Navigation
         function navigateTo(page) {
             document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
             document.getElementById(`${page}Page`).style.display = 'block';
@@ -1839,7 +1886,6 @@
                 document.getElementById('sidebar').classList.remove('open');
             }
             
-            // Refresh specific pages
             if (page === 'dashboard') refreshDashboard();
             else if (page === 'events') refreshEvents();
             else if (page === 'members') refreshMembers();
@@ -1847,7 +1893,6 @@
             else if (page === 'statements') refreshStatements();
         }
         
-        // Dashboard Functions
         function refreshDashboard() {
             renderStats();
             renderCharts();
@@ -1896,7 +1941,6 @@
         }
         
         function renderCharts() {
-            // Pie Chart
             const eventTotals = {};
             events.forEach(e => eventTotals[e.id] = 0);
             contributions.forEach(c => eventTotals[c.eventId] = (eventTotals[c.eventId] || 0) + c.amount);
@@ -1915,15 +1959,10 @@
                             borderColor: 'white'
                         }]
                     },
-                    options: {
-                        responsive: true,
-                        cutout: '60%',
-                        plugins: { legend: { position: 'bottom' } }
-                    }
+                    options: { responsive: true, cutout: '60%', plugins: { legend: { position: 'bottom' } } }
                 });
             }
             
-            // Bar Chart
             const memberTotals = members.map(m => ({
                 name: m.name.split(' ')[0],
                 total: contributions.filter(c => c.memberId === m.id).reduce((s, c) => s + c.amount, 0)
@@ -1943,10 +1982,7 @@
                             borderRadius: 8
                         }]
                     },
-                    options: {
-                        responsive: true,
-                        plugins: { legend: { display: false } }
-                    }
+                    options: { responsive: true, plugins: { legend: { display: false } } }
                 });
             }
         }
@@ -1956,19 +1992,14 @@
             
             if (recent.length === 0) {
                 document.getElementById('recentTable').innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-inbox"></i>
-                        <p>No transactions yet</p>
-                    </div>
+                    <div class="empty-state"><i class="fas fa-inbox"></i><p>No transactions yet</p></div>
                 `;
                 return;
             }
             
             document.getElementById('recentTable').innerHTML = `
                 <table>
-                    <thead>
-                        <tr><th>Date</th><th>Member</th><th>Event</th><th>Amount</th></tr>
-                    </thead>
+                    <thead><tr><th>Date</th><th>Member</th><th>Event</th><th>Amount</th></tr></thead>
                     <tbody>
                         ${recent.map(c => `
                             <tr>
@@ -1983,28 +2014,20 @@
             `;
         }
         
-        // Events Functions
         function refreshEvents() {
             const searchTerm = document.getElementById('searchEventInput')?.value.toLowerCase() || '';
-            const filtered = events.filter(e => 
-                !e.archived && e.name.toLowerCase().includes(searchTerm)
-            );
+            const filtered = events.filter(e => !e.archived && e.name.toLowerCase().includes(searchTerm));
             
             if (filtered.length === 0) {
                 document.getElementById('eventsListDiv').innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-calendar"></i>
-                        <p>No events found</p>
-                    </div>
+                    <div class="empty-state"><i class="fas fa-calendar"></i><p>No events found</p></div>
                 `;
                 return;
             }
             
             document.getElementById('eventsListDiv').innerHTML = `
                 <table>
-                    <thead>
-                        <tr><th>Event</th><th>Target</th><th>Deadline</th><th>Progress</th><th>Actions</th></tr>
-                    </thead>
+                    <thead><tr><th>Event</th><th>Target</th><th>Deadline</th><th>Progress</th><th>Actions</th></tr></thead>
                     <tbody>
                         ${filtered.map(e => {
                             const collected = contributions.filter(c => c.eventId === e.id).reduce((s, c) => s + c.amount, 0);
@@ -2017,13 +2040,12 @@
                                     <td>${formatDate(e.deadline)}</td>
                                     <td>
                                         <div style="display: flex; align-items: center; gap: 10px;">
-                                            <div class="progress-container">
-                                                <div class="progress-bar" style="width: ${Math.min(percent, 100)}%"></div>
-                                            </div>
+                                            <div class="progress-container"><div class="progress-bar" style="width: ${Math.min(percent, 100)}%"></div></div>
                                             <span>${percent.toFixed(0)}%</span>
                                         </div>
                                     </td>
                                     <td>
+                                        <button class="btn-icon" onclick="editEvent(${e.id})"><i class="fas fa-edit"></i></button>
                                         <button class="btn-icon" onclick="archiveEvent(${e.id})"><i class="fas fa-archive"></i></button>
                                     </td>
                                 </tr>
@@ -2033,6 +2055,17 @@
                 </table>
             `;
         }
+        
+        window.editEvent = (id) => {
+            const event = events.find(e => e.id === id);
+            if (event) {
+                document.getElementById('editEventId').value = id;
+                document.getElementById('editEventName').value = event.name;
+                document.getElementById('editEventTarget').value = event.target;
+                document.getElementById('editEventDeadline').value = event.deadline || '';
+                openModal('editEventModal');
+            }
+        };
         
         window.archiveEvent = (id) => {
             const event = events.find(e => e.id === id);
@@ -2044,26 +2077,20 @@
             }
         };
         
-        // Members Functions
         function refreshMembers() {
             const searchTerm = document.getElementById('searchMemberInput')?.value.toLowerCase() || '';
             const filtered = members.filter(m => m.name.toLowerCase().includes(searchTerm));
             
             if (filtered.length === 0) {
                 document.getElementById('membersListDiv').innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-users"></i>
-                        <p>No members found</p>
-                    </div>
+                    <div class="empty-state"><i class="fas fa-users"></i><p>No members found</p></div>
                 `;
                 return;
             }
             
             document.getElementById('membersListDiv').innerHTML = `
                 <table>
-                    <thead>
-                        <tr><th>Name</th><th>Role</th><th>Status</th><th>Total</th><th>Actions</th></tr>
-                    </thead>
+                    <thead><tr><th>Name</th><th>Role</th><th>Status</th><th>Total</th><th>Actions</th></tr></thead>
                     <tbody>
                         ${filtered.map(m => {
                             const total = contributions.filter(c => c.memberId === m.id).reduce((s, c) => s + c.amount, 0);
@@ -2076,6 +2103,7 @@
                                     <td><span class="badge badge-${m.status === 'active' ? 'success' : 'warning'}">${m.status}</span></td>
                                     <td><strong>${formatKES(total)}</strong></td>
                                     <td>
+                                        <button class="btn-icon" onclick="editMember(${m.id})"><i class="fas fa-edit"></i></button>
                                         <button class="btn-icon" onclick="toggleMemberStatus(${m.id})"><i class="fas fa-exchange-alt"></i></button>
                                     </td>
                                 </tr>
@@ -2085,6 +2113,17 @@
                 </table>
             `;
         }
+        
+        window.editMember = (id) => {
+            const member = members.find(m => m.id === id);
+            if (member) {
+                document.getElementById('editMemberId').value = id;
+                document.getElementById('editMemberName').value = member.name;
+                document.getElementById('editMemberStatus').value = member.status;
+                document.getElementById('editMemberRole').value = member.role || 'member';
+                openModal('editMemberModal');
+            }
+        };
         
         window.toggleMemberStatus = (id) => {
             const member = members.find(m => m.id === id);
@@ -2096,31 +2135,24 @@
             }
         };
         
-        // Contributions Functions
         function refreshContributions() {
-            // Populate selects
             const memberSelect = document.getElementById('contMemberSel');
             const eventSelect = document.getElementById('contEventSel');
             const summarySelect = document.getElementById('eventSummarySelect');
             
             if (memberSelect) {
-                memberSelect.innerHTML = members.map(m => 
-                    `<option value="${m.id}">${m.name}</option>`
-                ).join('');
+                memberSelect.innerHTML = members.map(m => `<option value="${m.id}">${m.name}</option>`).join('');
             }
             
             if (eventSelect || summarySelect) {
                 const activeEvents = events.filter(e => !e.archived);
-                const options = activeEvents.map(e => 
-                    `<option value="${e.id}">${e.name}</option>`
-                ).join('');
+                const options = activeEvents.map(e => `<option value="${e.id}">${e.name}</option>`).join('');
                 
                 if (eventSelect) eventSelect.innerHTML = options;
                 if (summarySelect) summarySelect.innerHTML = options;
             }
         }
         
-        // Statement Functions
         function refreshStatements() {
             const memberSelects = ['stmtMemberSel', 'eventStmtMemberSel'];
             const eventSelects = ['eventStmtEventSel'];
@@ -2128,34 +2160,26 @@
             memberSelects.forEach(id => {
                 const select = document.getElementById(id);
                 if (select) {
-                    select.innerHTML = members.map(m => 
-                        `<option value="${m.id}">${m.name}</option>`
-                    ).join('');
+                    select.innerHTML = members.map(m => `<option value="${m.id}">${m.name}</option>`).join('');
                 }
             });
             
             eventSelects.forEach(id => {
                 const select = document.getElementById(id);
                 if (select) {
-                    select.innerHTML = events.filter(e => !e.archived).map(e => 
-                        `<option value="${e.id}">${e.name}</option>`
-                    ).join('');
+                    select.innerHTML = events.filter(e => !e.archived).map(e => `<option value="${e.id}">${e.name}</option>`).join('');
                 }
             });
         }
         
-        // Transaction Log
         function refreshTransactionLog() {
             const select = document.getElementById('txEventSelect');
             if (select) {
                 select.innerHTML = '<option value="">-- Select an Event --</option>' + 
-                    events.filter(e => !e.archived).map(e => 
-                        `<option value="${e.id}">${e.name}</option>`
-                    ).join('');
+                    events.filter(e => !e.archived).map(e => `<option value="${e.id}">${e.name}</option>`).join('');
             }
         }
         
-        // Document Generation
         function generateSummaryCard(eventId) {
             const event = events.find(e => e.id === eventId);
             if (!event) return '';
@@ -2163,7 +2187,6 @@
             const eventContributions = contributions.filter(c => c.eventId === eventId);
             const total = eventContributions.reduce((s, c) => s + c.amount, 0);
             
-            // Group by member
             const memberTotals = {};
             eventContributions.forEach(c => {
                 memberTotals[c.memberId] = (memberTotals[c.memberId] || 0) + c.amount;
@@ -2177,22 +2200,10 @@
                     </div>
                     
                     <div class="doc-info-grid">
-                        <div class="doc-info-item">
-                            <div class="doc-info-label">Total Collected</div>
-                            <div class="doc-info-value">${formatKES(total)}</div>
-                        </div>
-                        <div class="doc-info-item">
-                            <div class="doc-info-label">Target Amount</div>
-                            <div class="doc-info-value">${formatKES(event.target)}</div>
-                        </div>
-                        <div class="doc-info-item">
-                            <div class="doc-info-label">Deadline</div>
-                            <div class="doc-info-value">${formatDate(event.deadline)}</div>
-                        </div>
-                        <div class="doc-info-item">
-                            <div class="doc-info-label">Progress</div>
-                            <div class="doc-info-value">${((total / event.target) * 100).toFixed(1)}%</div>
-                        </div>
+                        <div class="doc-info-item"><div class="doc-info-label">Total Collected</div><div class="doc-info-value">${formatKES(total)}</div></div>
+                        <div class="doc-info-item"><div class="doc-info-label">Target Amount</div><div class="doc-info-value">${formatKES(event.target)}</div></div>
+                        <div class="doc-info-item"><div class="doc-info-label">Deadline</div><div class="doc-info-value">${formatDate(event.deadline)}</div></div>
+                        <div class="doc-info-item"><div class="doc-info-label">Progress</div><div class="doc-info-value">${((total / event.target) * 100).toFixed(1)}%</div></div>
                     </div>
                     
                     <table class="doc-table">
@@ -2220,22 +2231,13 @@
             `;
         }
         
-        // Utility Functions
         function formatKES(amount) {
-            return new Intl.NumberFormat('en-KE', {
-                style: 'currency',
-                currency: 'KES',
-                minimumFractionDigits: 0
-            }).format(amount);
+            return new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES', minimumFractionDigits: 0 }).format(amount);
         }
         
         function formatDate(dateStr) {
             if (!dateStr) return 'N/A';
-            return new Date(dateStr).toLocaleDateString('en-KE', {
-                year: 'numeric',
-                month: 'short',
-                day: 'numeric'
-            });
+            return new Date(dateStr).toLocaleDateString('en-KE', { year: 'numeric', month: 'short', day: 'numeric' });
         }
         
         function getMemberName(id) {
@@ -2248,12 +2250,9 @@
             return e ? e.name : 'Unknown';
         }
         
-        // Setup Event Listeners
         function setupEventListeners() {
-            // Login
             document.getElementById('doLoginBtn').addEventListener('click', handleLogin);
             
-            // Auth mode switch
             document.getElementById('switchAuthMode').addEventListener('click', () => {
                 isRegisterMode = !isRegisterMode;
                 document.getElementById('registerFields').style.display = isRegisterMode ? 'block' : 'none';
@@ -2262,11 +2261,9 @@
                 document.getElementById('switchAuthMode').textContent = isRegisterMode ? 'Back to Login' : 'Create Account';
             });
             
-            // Navigation
             document.querySelectorAll('[data-page]').forEach(item => {
                 item.addEventListener('click', (e) => {
                     const page = e.currentTarget.dataset.page;
-                    
                     if (page === 'transactionlog') {
                         pendingPage = page;
                         openModal('reAuthModal');
@@ -2276,7 +2273,6 @@
                 });
             });
             
-            // Re-auth confirm
             document.getElementById('reAuthConfirmBtn').addEventListener('click', () => {
                 const password = document.getElementById('reAuthPassword').value;
                 if (password === currentUser?.password) {
@@ -2293,7 +2289,34 @@
                 }
             });
             
-            // Logout
+            document.getElementById('saveMemberBtn').addEventListener('click', () => {
+                const id = parseInt(document.getElementById('editMemberId').value);
+                const member = members.find(m => m.id === id);
+                if (member) {
+                    member.name = document.getElementById('editMemberName').value;
+                    member.status = document.getElementById('editMemberStatus').value;
+                    member.role = document.getElementById('editMemberRole').value;
+                    saveAllData();
+                    closeModal('editMemberModal');
+                    refreshMembers();
+                    showToast('Member updated successfully', 'success');
+                }
+            });
+            
+            document.getElementById('saveEventBtn').addEventListener('click', () => {
+                const id = parseInt(document.getElementById('editEventId').value);
+                const event = events.find(e => e.id === id);
+                if (event) {
+                    event.name = document.getElementById('editEventName').value;
+                    event.target = parseFloat(document.getElementById('editEventTarget').value);
+                    event.deadline = document.getElementById('editEventDeadline').value;
+                    saveAllData();
+                    closeModal('editEventModal');
+                    refreshEvents();
+                    showToast('Event updated successfully', 'success');
+                }
+            });
+            
             document.getElementById('logoutBtn').addEventListener('click', () => {
                 currentUser = null;
                 document.getElementById('appContainer').style.display = 'none';
@@ -2303,7 +2326,6 @@
                 showToast('Logged out successfully', 'info');
             });
             
-            // Theme toggle
             document.getElementById('themeToggle')?.addEventListener('click', () => {
                 document.body.classList.toggle('dark');
             });
@@ -2312,12 +2334,10 @@
                 document.body.classList.toggle('dark');
             });
             
-            // Mobile menu
             document.getElementById('mobileMenuToggle')?.addEventListener('click', () => {
                 document.getElementById('sidebar').classList.add('open');
             });
             
-            // Create Event
             document.getElementById('createEventBtn')?.addEventListener('click', () => {
                 const name = document.getElementById('newEventName').value.trim();
                 const target = parseFloat(document.getElementById('newEventTarget').value);
@@ -2338,11 +2358,9 @@
                 
                 refreshEvents();
                 showToast('Event created successfully!', 'success');
-                
                 confetti({ particleCount: 50, spread: 60, origin: { y: 0.6 } });
             });
             
-            // Add Member
             document.getElementById('addMemberBtn')?.addEventListener('click', () => {
                 const name = document.getElementById('newMemberName').value.trim();
                 const status = document.getElementById('memberStatusSelect').value;
@@ -2361,7 +2379,6 @@
                 showToast('Member added successfully!', 'success');
             });
             
-            // Record Contribution
             document.getElementById('recordContBtn')?.addEventListener('click', () => {
                 const memberId = parseInt(document.getElementById('contMemberSel').value);
                 const eventId = parseInt(document.getElementById('contEventSel').value);
@@ -2380,11 +2397,9 @@
                 document.getElementById('contAmount').value = '';
                 refreshDashboard();
                 showToast('Contribution recorded!', 'success');
-                
                 confetti({ particleCount: 30, spread: 50, origin: { y: 0.7 } });
             });
             
-            // Transaction Log Event Select
             document.getElementById('txEventSelect')?.addEventListener('change', (e) => {
                 const eventId = parseInt(e.target.value);
                 if (!eventId) return;
@@ -2399,9 +2414,7 @@
                 
                 container.innerHTML = `
                     <table>
-                        <thead>
-                            <tr><th>Date</th><th>Member</th><th>Amount</th><th>Actions</th></tr>
-                        </thead>
+                        <thead><tr><th>Date</th><th>Member</th><th>Amount</th><th>Actions</th></tr></thead>
                         <tbody>
                             ${eventContributions.map(c => `
                                 <tr>
@@ -2420,7 +2433,6 @@
                 `;
             });
             
-            // Statement Previews
             document.getElementById('previewSummaryBtn')?.addEventListener('click', () => {
                 const eventId = parseInt(document.getElementById('eventSummarySelect').value);
                 if (eventId) {
@@ -2445,12 +2457,7 @@
                 
                 if (memberId && fromDate && toDate) {
                     const member = members.find(m => m.id === memberId);
-                    const filtered = contributions.filter(c => 
-                        c.memberId === memberId && 
-                        c.date >= fromDate && 
-                        c.date <= toDate
-                    );
-                    
+                    const filtered = contributions.filter(c => c.memberId === memberId && c.date >= fromDate && c.date <= toDate);
                     const total = filtered.reduce((s, c) => s + c.amount, 0);
                     
                     const html = `
@@ -2461,31 +2468,16 @@
                             </div>
                             
                             <div class="doc-info-grid">
-                                <div class="doc-info-item">
-                                    <div class="doc-info-label">Member</div>
-                                    <div class="doc-info-value">${member.name}</div>
-                                </div>
-                                <div class="doc-info-item">
-                                    <div class="doc-info-label">Period</div>
-                                    <div class="doc-info-value">${formatDate(fromDate)} - ${formatDate(toDate)}</div>
-                                </div>
-                                <div class="doc-info-item">
-                                    <div class="doc-info-label">Total</div>
-                                    <div class="doc-info-value">${formatKES(total)}</div>
-                                </div>
+                                <div class="doc-info-item"><div class="doc-info-label">Member</div><div class="doc-info-value">${member.name}</div></div>
+                                <div class="doc-info-item"><div class="doc-info-label">Period</div><div class="doc-info-value">${formatDate(fromDate)} - ${formatDate(toDate)}</div></div>
+                                <div class="doc-info-item"><div class="doc-info-label">Total</div><div class="doc-info-value">${formatKES(total)}</div></div>
                             </div>
                             
                             <table class="doc-table">
-                                <thead>
-                                    <tr><th>Date</th><th>Event</th><th>Amount</th></tr>
-                                </thead>
+                                <thead><tr><th>Date</th><th>Event</th><th>Amount</th></tr></thead>
                                 <tbody>
                                     ${filtered.map(c => `
-                                        <tr>
-                                            <td>${formatDate(c.date)}</td>
-                                            <td>${getEventName(c.eventId)}</td>
-                                            <td>${formatKES(c.amount)}</td>
-                                        </tr>
+                                        <tr><td>${formatDate(c.date)}</td><td>${getEventName(c.eventId)}</td><td>${formatKES(c.amount)}</td></tr>
                                     `).join('')}
                                 </tbody>
                             </table>
@@ -2507,7 +2499,6 @@
                 }
             });
             
-            // Export Data
             document.getElementById('exportAllDataBtn')?.addEventListener('click', () => {
                 const data = { members, events, contributions, users };
                 const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -2519,7 +2510,6 @@
                 showToast('Backup exported', 'success');
             });
             
-            // Import Data
             document.getElementById('importFileInput')?.addEventListener('change', (e) => {
                 const file = e.target.files[0];
                 if (file) {
@@ -2542,9 +2532,9 @@
                 }
             });
             
-            // Search inputs
             document.getElementById('searchEventInput')?.addEventListener('input', refreshEvents);
             document.getElementById('searchMemberInput')?.addEventListener('input', refreshMembers);
+            
             document.getElementById('txSearchInput')?.addEventListener('input', () => {
                 const searchTerm = document.getElementById('txSearchInput').value.toLowerCase();
                 const eventId = parseInt(document.getElementById('txEventSelect').value);
@@ -2552,15 +2542,12 @@
                     const container = document.getElementById('transactionLogTable');
                     const filtered = contributions.filter(c => 
                         c.eventId === eventId && 
-                        (getMemberName(c.memberId).toLowerCase().includes(searchTerm) ||
-                         c.amount.toString().includes(searchTerm))
+                        (getMemberName(c.memberId).toLowerCase().includes(searchTerm) || c.amount.toString().includes(searchTerm))
                     );
                     
                     container.innerHTML = `
                         <table>
-                            <thead>
-                                <tr><th>Date</th><th>Member</th><th>Amount</th><th>Actions</th></tr>
-                            </thead>
+                            <thead><tr><th>Date</th><th>Member</th><th>Amount</th><th>Actions</th></tr></thead>
                             <tbody>
                                 ${filtered.map(c => `
                                     <tr>
@@ -2587,9 +2574,7 @@
                 saveAllData();
                 
                 const select = document.getElementById('txEventSelect');
-                if (select) {
-                    select.dispatchEvent(new Event('change'));
-                }
+                if (select) select.dispatchEvent(new Event('change'));
                 
                 refreshDashboard();
                 showToast('Contribution deleted', 'success');
@@ -2614,14 +2599,7 @@
                     return;
                 }
                 
-                const newUser = {
-                    id: users.length + 1,
-                    username,
-                    password,
-                    fullName,
-                    role
-                };
-                
+                const newUser = { id: users.length + 1, username, password, fullName, role };
                 users.push(newUser);
                 saveAllData();
                 
@@ -2649,21 +2627,14 @@
                 
                 showToast(`Welcome back, ${user.fullName}!`, 'success');
                 
-                confetti({
-                    particleCount: 100,
-                    spread: 70,
-                    origin: { y: 0.6 },
-                    colors: ['#10367D', '#A5CE00', '#3b82f6']
-                });
+                confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, colors: ['#10367D', '#A5CE00', '#3b82f6'] });
             } else {
                 showToast('Invalid credentials', 'error');
             }
         }
         
-        // Make navigateTo globally available
         window.navigateTo = navigateTo;
         
-        // Initialize app
         init();
     </script>
 </body>
