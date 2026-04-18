@@ -544,7 +544,7 @@
             padding: 2rem;
             border-radius: var(--radius-xl);
             font-family: 'Inter', 'Poppins', sans-serif;
-            max-width: 210mm;
+            max-width: 800px;
             margin: 0 auto;
             color: #1e293b;
             position: relative;
@@ -1765,7 +1765,7 @@
 
     <script>
         // ============================================
-        // FIXED DOWNLOADS - FULLY FUNCTIONAL
+        // FIXED PDF & PNG DOWNLOADS
         // ============================================
         
         let currentUser = null;
@@ -2195,7 +2195,7 @@
             });
             
             return `
-                <div class="print-document" id="summaryDocument">
+                <div class="print-document">
                     <div class="doc-header">
                         <div class="doc-title">${event.name}</div>
                         <div class="doc-subtitle">Finance Hub • Contribution Summary</div>
@@ -2241,7 +2241,7 @@
             const total = filtered.reduce((s, c) => s + c.amount, 0);
             
             return `
-                <div class="print-document" id="statementDocument">
+                <div class="print-document">
                     <div class="doc-header">
                         <div class="doc-title">Member Statement</div>
                         <div class="doc-subtitle">Finance Hub • ${member.name}</div>
@@ -2276,42 +2276,82 @@
             `;
         }
         
-        // FIXED: Download PDF function
-        async function downloadPDF(element, filename) {
+        // FIXED: Download PDF
+        async function downloadPDF(htmlContent, filename) {
+            const tempDiv = document.createElement('div');
+            tempDiv.style.position = 'fixed';
+            tempDiv.style.left = '0';
+            tempDiv.style.top = '0';
+            tempDiv.style.width = '800px';
+            tempDiv.style.zIndex = '-1';
+            tempDiv.style.backgroundColor = 'white';
+            tempDiv.innerHTML = htmlContent;
+            document.body.appendChild(tempDiv);
+            
+            const element = tempDiv.firstChild;
+            
             const opt = {
                 margin: [0.5, 0.5, 0.5, 0.5],
                 filename: filename,
                 image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, letterRendering: true, useCORS: true },
-                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+                html2canvas: { 
+                    scale: 2, 
+                    letterRendering: true,
+                    useCORS: true,
+                    logging: false
+                },
+                jsPDF: { 
+                    unit: 'in', 
+                    format: 'a4', 
+                    orientation: 'portrait' 
+                }
             };
             
             try {
                 await html2pdf().set(opt).from(element).save();
-                return true;
+                showToast('PDF downloaded successfully', 'success');
             } catch (error) {
-                console.error('PDF generation error:', error);
-                return false;
+                console.error('PDF Error:', error);
+                showToast('Failed to generate PDF', 'error');
+            } finally {
+                document.body.removeChild(tempDiv);
             }
         }
         
-        // FIXED: Download PNG function
-        async function downloadPNG(element, filename) {
+        // FIXED: Download PNG
+        async function downloadPNG(htmlContent, filename) {
+            const tempDiv = document.createElement('div');
+            tempDiv.style.position = 'fixed';
+            tempDiv.style.left = '0';
+            tempDiv.style.top = '0';
+            tempDiv.style.width = '800px';
+            tempDiv.style.zIndex = '-1';
+            tempDiv.style.backgroundColor = 'white';
+            tempDiv.innerHTML = htmlContent;
+            document.body.appendChild(tempDiv);
+            
+            const element = tempDiv.firstChild;
+            
             try {
                 const canvas = await html2canvas(element, { 
                     scale: 3, 
                     backgroundColor: '#ffffff',
                     allowTaint: true,
-                    useCORS: true
+                    useCORS: true,
+                    logging: false
                 });
+                
                 const link = document.createElement('a');
                 link.download = filename;
                 link.href = canvas.toDataURL('image/png');
                 link.click();
-                return true;
+                
+                showToast('PNG downloaded successfully', 'success');
             } catch (error) {
-                console.error('PNG generation error:', error);
-                return false;
+                console.error('PNG Error:', error);
+                showToast('Failed to generate PNG', 'error');
+            } finally {
+                document.body.removeChild(tempDiv);
             }
         }
         
@@ -2525,52 +2565,24 @@
             });
             
             // FIXED: PDF Download for Summary
-            document.getElementById('exportSummaryPdfBtn')?.addEventListener('click', async () => {
+            document.getElementById('exportSummaryPdfBtn')?.addEventListener('click', () => {
                 const eventId = parseInt(document.getElementById('eventSummarySelect').value);
                 if (eventId) {
                     const html = generateSummaryCard(eventId);
-                    const tempDiv = document.createElement('div');
-                    tempDiv.style.position = 'absolute';
-                    tempDiv.style.left = '-9999px';
-                    tempDiv.innerHTML = html;
-                    document.body.appendChild(tempDiv);
-                    
-                    const element = tempDiv.firstChild;
-                    const success = await downloadPDF(element, `Event_Summary_${getEventName(eventId)}.pdf`);
-                    document.body.removeChild(tempDiv);
-                    
-                    if (success) {
-                        showToast('PDF downloaded successfully', 'success');
-                    } else {
-                        showToast('Failed to generate PDF', 'error');
-                    }
+                    downloadPDF(html, `Event_Summary_${getEventName(eventId)}.pdf`);
                 }
             });
             
             // FIXED: PNG Download for Summary
-            document.getElementById('exportSummaryPngBtn')?.addEventListener('click', async () => {
+            document.getElementById('exportSummaryPngBtn')?.addEventListener('click', () => {
                 const eventId = parseInt(document.getElementById('eventSummarySelect').value);
                 if (eventId) {
                     const html = generateSummaryCard(eventId);
-                    const tempDiv = document.createElement('div');
-                    tempDiv.style.position = 'absolute';
-                    tempDiv.style.left = '-9999px';
-                    tempDiv.innerHTML = html;
-                    document.body.appendChild(tempDiv);
-                    
-                    const element = tempDiv.firstChild;
-                    const success = await downloadPNG(element, `Event_Summary_${getEventName(eventId)}.png`);
-                    document.body.removeChild(tempDiv);
-                    
-                    if (success) {
-                        showToast('PNG downloaded successfully', 'success');
-                    } else {
-                        showToast('Failed to generate PNG', 'error');
-                    }
+                    downloadPNG(html, `Event_Summary_${getEventName(eventId)}.png`);
                 }
             });
             
-            // FIXED: Excel Download
+            // Excel Download (already working)
             document.getElementById('exportSummaryExcelBtn')?.addEventListener('click', () => {
                 const eventId = parseInt(document.getElementById('eventSummarySelect').value);
                 if (eventId) {
@@ -2604,7 +2616,7 @@
             });
             
             // FIXED: Statement PDF Download
-            document.getElementById('downloadStmtBtn')?.addEventListener('click', async () => {
+            document.getElementById('downloadStmtBtn')?.addEventListener('click', () => {
                 const memberId = parseInt(document.getElementById('stmtMemberSel').value);
                 const fromDate = document.getElementById('stmtFromDate').value;
                 const toDate = document.getElementById('stmtToDate').value;
@@ -2612,27 +2624,12 @@
                 if (memberId && fromDate && toDate) {
                     const member = members.find(m => m.id === memberId);
                     const html = generateMemberStatement(memberId, fromDate, toDate);
-                    
-                    const tempDiv = document.createElement('div');
-                    tempDiv.style.position = 'absolute';
-                    tempDiv.style.left = '-9999px';
-                    tempDiv.innerHTML = html;
-                    document.body.appendChild(tempDiv);
-                    
-                    const element = tempDiv.firstChild;
-                    const success = await downloadPDF(element, `Statement_${member.name}.pdf`);
-                    document.body.removeChild(tempDiv);
-                    
-                    if (success) {
-                        showToast('PDF downloaded successfully', 'success');
-                    } else {
-                        showToast('Failed to generate PDF', 'error');
-                    }
+                    downloadPDF(html, `Statement_${member.name}.pdf`);
                 }
             });
             
             // FIXED: Statement PNG Download
-            document.getElementById('downloadStmtPngBtn')?.addEventListener('click', async () => {
+            document.getElementById('downloadStmtPngBtn')?.addEventListener('click', () => {
                 const memberId = parseInt(document.getElementById('stmtMemberSel').value);
                 const fromDate = document.getElementById('stmtFromDate').value;
                 const toDate = document.getElementById('stmtToDate').value;
@@ -2640,22 +2637,7 @@
                 if (memberId && fromDate && toDate) {
                     const member = members.find(m => m.id === memberId);
                     const html = generateMemberStatement(memberId, fromDate, toDate);
-                    
-                    const tempDiv = document.createElement('div');
-                    tempDiv.style.position = 'absolute';
-                    tempDiv.style.left = '-9999px';
-                    tempDiv.innerHTML = html;
-                    document.body.appendChild(tempDiv);
-                    
-                    const element = tempDiv.firstChild;
-                    const success = await downloadPNG(element, `Statement_${member.name}.png`);
-                    document.body.removeChild(tempDiv);
-                    
-                    if (success) {
-                        showToast('PNG downloaded successfully', 'success');
-                    } else {
-                        showToast('Failed to generate PNG', 'error');
-                    }
+                    downloadPNG(html, `Statement_${member.name}.png`);
                 }
             });
             
@@ -2705,8 +2687,9 @@
                         (getMemberName(c.memberId).toLowerCase().includes(searchTerm) || c.amount.toString().includes(searchTerm))
                     );
                     
-                    container.innerHTML = `
-                        <table>
+                    container.innerHTML = filtered.length === 0 ? 
+                        `<div class="empty-state"><i class="fas fa-search"></i><p>No matching transactions</p></div>` :
+                        `<table>
                             <thead><tr><th>Date</th><th>Member</th><th>Amount</th><th>Actions</th></tr></thead>
                             <tbody>
                                 ${filtered.map(c => `
@@ -2722,8 +2705,7 @@
                                     </tr>
                                 `).join('')}
                             </tbody>
-                        </table>
-                    `;
+                        </table>`;
                 }
             });
         }
@@ -2794,6 +2776,7 @@
         }
         
         window.navigateTo = navigateTo;
+        window.closeModal = closeModal;
         
         init();
     </script>
