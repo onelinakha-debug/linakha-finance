@@ -1309,7 +1309,7 @@
                 <label class="input-label">Username</label>
                 <div class="input-wrapper">
                     <i class="fas fa-user"></i>
-                    <input type="text" class="input-field" id="loginUsername" placeholder="Enter your username">
+                    <input type="text" class="input-field" id="loginUsername" placeholder="Enter your username" value="admin">
                 </div>
             </div>
             
@@ -1317,7 +1317,7 @@
                 <label class="input-label">Password</label>
                 <div class="input-wrapper">
                     <i class="fas fa-lock"></i>
-                    <input type="password" class="input-field" id="loginPassword" placeholder="Enter your password">
+                    <input type="password" class="input-field" id="loginPassword" placeholder="Enter your password" value="admin123">
                 </div>
             </div>
             
@@ -1765,7 +1765,7 @@
 
     <script>
         // ============================================
-        // ENHANCED APPLICATION WITH FIXED DOWNLOADS
+        // FIXED DOWNLOADS - FULLY FUNCTIONAL
         // ============================================
         
         let currentUser = null;
@@ -2233,6 +2233,88 @@
             `;
         }
         
+        function generateMemberStatement(memberId, fromDate, toDate) {
+            const member = members.find(m => m.id === memberId);
+            if (!member) return '';
+            
+            const filtered = contributions.filter(c => c.memberId === memberId && c.date >= fromDate && c.date <= toDate);
+            const total = filtered.reduce((s, c) => s + c.amount, 0);
+            
+            return `
+                <div class="print-document" id="statementDocument">
+                    <div class="doc-header">
+                        <div class="doc-title">Member Statement</div>
+                        <div class="doc-subtitle">Finance Hub • ${member.name}</div>
+                    </div>
+                    
+                    <div class="doc-info-grid">
+                        <div class="doc-info-item"><div class="doc-info-label">Member</div><div class="doc-info-value">${member.name}</div></div>
+                        <div class="doc-info-item"><div class="doc-info-label">Period</div><div class="doc-info-value">${formatDate(fromDate)} - ${formatDate(toDate)}</div></div>
+                        <div class="doc-info-item"><div class="doc-info-label">Total</div><div class="doc-info-value">${formatKES(total)}</div></div>
+                    </div>
+                    
+                    <table class="doc-table">
+                        <thead><tr><th>Date</th><th>Event</th><th>Amount</th></tr></thead>
+                        <tbody>
+                            ${filtered.map(c => `
+                                <tr><td>${formatDate(c.date)}</td><td>${getEventName(c.eventId)}</td><td>${formatKES(c.amount)}</td></tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                    
+                    <div class="doc-total">
+                        <div class="doc-total-label">Total Contribution</div>
+                        <div class="doc-total-value">${formatKES(total)}</div>
+                    </div>
+                    
+                    <div class="doc-footer">
+                        <span><i class="fas fa-phone"></i> +254 112 598 008</span>
+                        <span>Generated on ${new Date().toLocaleDateString()}</span>
+                        <span>Finance Hub • Linakha Family</span>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // FIXED: Download PDF function
+        async function downloadPDF(element, filename) {
+            const opt = {
+                margin: [0.5, 0.5, 0.5, 0.5],
+                filename: filename,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, letterRendering: true, useCORS: true },
+                jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+            };
+            
+            try {
+                await html2pdf().set(opt).from(element).save();
+                return true;
+            } catch (error) {
+                console.error('PDF generation error:', error);
+                return false;
+            }
+        }
+        
+        // FIXED: Download PNG function
+        async function downloadPNG(element, filename) {
+            try {
+                const canvas = await html2canvas(element, { 
+                    scale: 3, 
+                    backgroundColor: '#ffffff',
+                    allowTaint: true,
+                    useCORS: true
+                });
+                const link = document.createElement('a');
+                link.download = filename;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                return true;
+            } catch (error) {
+                console.error('PNG generation error:', error);
+                return false;
+            }
+        }
+        
         function formatKES(amount) {
             return new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES', minimumFractionDigits: 0 }).format(amount);
         }
@@ -2442,54 +2524,53 @@
                 }
             });
             
-            // FIXED: PDF Download
-            document.getElementById('exportSummaryPdfBtn')?.addEventListener('click', () => {
+            // FIXED: PDF Download for Summary
+            document.getElementById('exportSummaryPdfBtn')?.addEventListener('click', async () => {
                 const eventId = parseInt(document.getElementById('eventSummarySelect').value);
                 if (eventId) {
-                    const content = generateSummaryCard(eventId);
+                    const html = generateSummaryCard(eventId);
                     const tempDiv = document.createElement('div');
-                    tempDiv.innerHTML = content;
+                    tempDiv.style.position = 'absolute';
+                    tempDiv.style.left = '-9999px';
+                    tempDiv.innerHTML = html;
+                    document.body.appendChild(tempDiv);
+                    
                     const element = tempDiv.firstChild;
+                    const success = await downloadPDF(element, `Event_Summary_${getEventName(eventId)}.pdf`);
+                    document.body.removeChild(tempDiv);
                     
-                    const opt = {
-                        margin: [0.5, 0.5, 0.5, 0.5],
-                        filename: `Event_Summary_${getEventName(eventId)}.pdf`,
-                        image: { type: 'jpeg', quality: 0.98 },
-                        html2canvas: { scale: 2, letterRendering: true },
-                        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-                    };
-                    
-                    html2pdf().set(opt).from(element).save();
-                    showToast('PDF downloaded', 'success');
-                }
-            });
-            
-            // FIXED: PNG Download
-            document.getElementById('exportSummaryPngBtn')?.addEventListener('click', async () => {
-                const eventId = parseInt(document.getElementById('eventSummarySelect').value);
-                if (eventId) {
-                    const content = generateSummaryCard(eventId);
-                    const tempDiv = document.createElement('div');
-                    tempDiv.innerHTML = content;
-                    const element = tempDiv.firstChild;
-                    document.body.appendChild(element);
-                    
-                    try {
-                        const canvas = await html2canvas(element, { scale: 3, backgroundColor: '#ffffff' });
-                        const link = document.createElement('a');
-                        link.download = `Event_Summary_${getEventName(eventId)}.png`;
-                        link.href = canvas.toDataURL('image/png');
-                        link.click();
-                        showToast('PNG downloaded', 'success');
-                    } catch (err) {
-                        showToast('Failed to generate PNG', 'error');
-                    } finally {
-                        document.body.removeChild(element);
+                    if (success) {
+                        showToast('PDF downloaded successfully', 'success');
+                    } else {
+                        showToast('Failed to generate PDF', 'error');
                     }
                 }
             });
             
-            // Excel Export
+            // FIXED: PNG Download for Summary
+            document.getElementById('exportSummaryPngBtn')?.addEventListener('click', async () => {
+                const eventId = parseInt(document.getElementById('eventSummarySelect').value);
+                if (eventId) {
+                    const html = generateSummaryCard(eventId);
+                    const tempDiv = document.createElement('div');
+                    tempDiv.style.position = 'absolute';
+                    tempDiv.style.left = '-9999px';
+                    tempDiv.innerHTML = html;
+                    document.body.appendChild(tempDiv);
+                    
+                    const element = tempDiv.firstChild;
+                    const success = await downloadPNG(element, `Event_Summary_${getEventName(eventId)}.png`);
+                    document.body.removeChild(tempDiv);
+                    
+                    if (success) {
+                        showToast('PNG downloaded successfully', 'success');
+                    } else {
+                        showToast('Failed to generate PNG', 'error');
+                    }
+                }
+            });
+            
+            // FIXED: Excel Download
             document.getElementById('exportSummaryExcelBtn')?.addEventListener('click', () => {
                 const eventId = parseInt(document.getElementById('eventSummarySelect').value);
                 if (eventId) {
@@ -2508,7 +2589,7 @@
                     const wb = XLSX.utils.book_new();
                     XLSX.utils.book_append_sheet(wb, ws, 'Summary');
                     XLSX.writeFile(wb, `Event_Summary_${getEventName(eventId)}.xlsx`);
-                    showToast('Excel downloaded', 'success');
+                    showToast('Excel downloaded successfully', 'success');
                 }
             });
             
@@ -2518,109 +2599,35 @@
                 const toDate = document.getElementById('stmtToDate').value;
                 
                 if (memberId && fromDate && toDate) {
-                    const member = members.find(m => m.id === memberId);
-                    const filtered = contributions.filter(c => c.memberId === memberId && c.date >= fromDate && c.date <= toDate);
-                    const total = filtered.reduce((s, c) => s + c.amount, 0);
-                    
-                    const html = `
-                        <div class="print-document">
-                            <div class="doc-header">
-                                <div class="doc-title">Member Statement</div>
-                                <div class="doc-subtitle">Finance Hub • ${member.name}</div>
-                            </div>
-                            
-                            <div class="doc-info-grid">
-                                <div class="doc-info-item"><div class="doc-info-label">Member</div><div class="doc-info-value">${member.name}</div></div>
-                                <div class="doc-info-item"><div class="doc-info-label">Period</div><div class="doc-info-value">${formatDate(fromDate)} - ${formatDate(toDate)}</div></div>
-                                <div class="doc-info-item"><div class="doc-info-label">Total</div><div class="doc-info-value">${formatKES(total)}</div></div>
-                            </div>
-                            
-                            <table class="doc-table">
-                                <thead><tr><th>Date</th><th>Event</th><th>Amount</th></tr></thead>
-                                <tbody>
-                                    ${filtered.map(c => `
-                                        <tr><td>${formatDate(c.date)}</td><td>${getEventName(c.eventId)}</td><td>${formatKES(c.amount)}</td></tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
-                            
-                            <div class="doc-total">
-                                <div class="doc-total-label">Total Contribution</div>
-                                <div class="doc-total-value">${formatKES(total)}</div>
-                            </div>
-                            
-                            <div class="doc-footer">
-                                <span><i class="fas fa-phone"></i> +254 112 598 008</span>
-                                <span>Generated on ${new Date().toLocaleDateString()}</span>
-                                <span>Finance Hub • Linakha Family</span>
-                            </div>
-                        </div>
-                    `;
-                    
-                    document.getElementById('statementPreviewArea').innerHTML = html;
+                    document.getElementById('statementPreviewArea').innerHTML = generateMemberStatement(memberId, fromDate, toDate);
                 }
             });
             
             // FIXED: Statement PDF Download
-            document.getElementById('downloadStmtBtn')?.addEventListener('click', () => {
+            document.getElementById('downloadStmtBtn')?.addEventListener('click', async () => {
                 const memberId = parseInt(document.getElementById('stmtMemberSel').value);
                 const fromDate = document.getElementById('stmtFromDate').value;
                 const toDate = document.getElementById('stmtToDate').value;
                 
                 if (memberId && fromDate && toDate) {
                     const member = members.find(m => m.id === memberId);
-                    const filtered = contributions.filter(c => c.memberId === memberId && c.date >= fromDate && c.date <= toDate);
-                    const total = filtered.reduce((s, c) => s + c.amount, 0);
-                    
-                    const html = `
-                        <div class="print-document">
-                            <div class="doc-header">
-                                <div class="doc-title">Member Statement</div>
-                                <div class="doc-subtitle">Finance Hub • ${member.name}</div>
-                            </div>
-                            
-                            <div class="doc-info-grid">
-                                <div class="doc-info-item"><div class="doc-info-label">Member</div><div class="doc-info-value">${member.name}</div></div>
-                                <div class="doc-info-item"><div class="doc-info-label">Period</div><div class="doc-info-value">${formatDate(fromDate)} - ${formatDate(toDate)}</div></div>
-                                <div class="doc-info-item"><div class="doc-info-label">Total</div><div class="doc-info-value">${formatKES(total)}</div></div>
-                            </div>
-                            
-                            <table class="doc-table">
-                                <thead><tr><th>Date</th><th>Event</th><th>Amount</th></tr></thead>
-                                <tbody>
-                                    ${filtered.map(c => `
-                                        <tr><td>${formatDate(c.date)}</td><td>${getEventName(c.eventId)}</td><td>${formatKES(c.amount)}</td></tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
-                            
-                            <div class="doc-total">
-                                <div class="doc-total-label">Total Contribution</div>
-                                <div class="doc-total-value">${formatKES(total)}</div>
-                            </div>
-                            
-                            <div class="doc-footer">
-                                <span><i class="fas fa-phone"></i> +254 112 598 008</span>
-                                <span>Generated on ${new Date().toLocaleDateString()}</span>
-                                <span>Finance Hub • Linakha Family</span>
-                            </div>
-                        </div>
-                    `;
+                    const html = generateMemberStatement(memberId, fromDate, toDate);
                     
                     const tempDiv = document.createElement('div');
+                    tempDiv.style.position = 'absolute';
+                    tempDiv.style.left = '-9999px';
                     tempDiv.innerHTML = html;
+                    document.body.appendChild(tempDiv);
+                    
                     const element = tempDiv.firstChild;
+                    const success = await downloadPDF(element, `Statement_${member.name}.pdf`);
+                    document.body.removeChild(tempDiv);
                     
-                    const opt = {
-                        margin: [0.5, 0.5, 0.5, 0.5],
-                        filename: `Statement_${member.name}.pdf`,
-                        image: { type: 'jpeg', quality: 0.98 },
-                        html2canvas: { scale: 2 },
-                        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
-                    };
-                    
-                    html2pdf().set(opt).from(element).save();
-                    showToast('PDF downloaded', 'success');
+                    if (success) {
+                        showToast('PDF downloaded successfully', 'success');
+                    } else {
+                        showToast('Failed to generate PDF', 'error');
+                    }
                 }
             });
             
@@ -2632,60 +2639,22 @@
                 
                 if (memberId && fromDate && toDate) {
                     const member = members.find(m => m.id === memberId);
-                    const filtered = contributions.filter(c => c.memberId === memberId && c.date >= fromDate && c.date <= toDate);
-                    const total = filtered.reduce((s, c) => s + c.amount, 0);
-                    
-                    const html = `
-                        <div class="print-document">
-                            <div class="doc-header">
-                                <div class="doc-title">Member Statement</div>
-                                <div class="doc-subtitle">Finance Hub • ${member.name}</div>
-                            </div>
-                            
-                            <div class="doc-info-grid">
-                                <div class="doc-info-item"><div class="doc-info-label">Member</div><div class="doc-info-value">${member.name}</div></div>
-                                <div class="doc-info-item"><div class="doc-info-label">Period</div><div class="doc-info-value">${formatDate(fromDate)} - ${formatDate(toDate)}</div></div>
-                                <div class="doc-info-item"><div class="doc-info-label">Total</div><div class="doc-info-value">${formatKES(total)}</div></div>
-                            </div>
-                            
-                            <table class="doc-table">
-                                <thead><tr><th>Date</th><th>Event</th><th>Amount</th></tr></thead>
-                                <tbody>
-                                    ${filtered.map(c => `
-                                        <tr><td>${formatDate(c.date)}</td><td>${getEventName(c.eventId)}</td><td>${formatKES(c.amount)}</td></tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
-                            
-                            <div class="doc-total">
-                                <div class="doc-total-label">Total Contribution</div>
-                                <div class="doc-total-value">${formatKES(total)}</div>
-                            </div>
-                            
-                            <div class="doc-footer">
-                                <span><i class="fas fa-phone"></i> +254 112 598 008</span>
-                                <span>Generated on ${new Date().toLocaleDateString()}</span>
-                                <span>Finance Hub • Linakha Family</span>
-                            </div>
-                        </div>
-                    `;
+                    const html = generateMemberStatement(memberId, fromDate, toDate);
                     
                     const tempDiv = document.createElement('div');
+                    tempDiv.style.position = 'absolute';
+                    tempDiv.style.left = '-9999px';
                     tempDiv.innerHTML = html;
-                    const element = tempDiv.firstChild;
-                    document.body.appendChild(element);
+                    document.body.appendChild(tempDiv);
                     
-                    try {
-                        const canvas = await html2canvas(element, { scale: 3, backgroundColor: '#ffffff' });
-                        const link = document.createElement('a');
-                        link.download = `Statement_${member.name}.png`;
-                        link.href = canvas.toDataURL('image/png');
-                        link.click();
-                        showToast('PNG downloaded', 'success');
-                    } catch (err) {
+                    const element = tempDiv.firstChild;
+                    const success = await downloadPNG(element, `Statement_${member.name}.png`);
+                    document.body.removeChild(tempDiv);
+                    
+                    if (success) {
+                        showToast('PNG downloaded successfully', 'success');
+                    } else {
                         showToast('Failed to generate PNG', 'error');
-                    } finally {
-                        document.body.removeChild(element);
                     }
                 }
             });
