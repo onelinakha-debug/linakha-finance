@@ -118,6 +118,10 @@
         tbody tr:nth-child(even) { background: rgba(0,0,0,0.02); }
         tbody tr:hover { background: rgba(0,0,0,0.05); cursor: pointer; }
         .badge { background: #eef2ff; padding: 4px 12px; border-radius: 50px; font-size: 0.7rem; font-weight: 600; color: #10367D; }
+        .badge-admin { background: #10367D; color: white; }
+        .badge-treasurer { background: #A5CE00; color: #10367D; }
+        .badge-chair { background: #ffb347; color: #10367D; }
+        .badge-youth { background: #3b82f6; color: white; }
         .icon-btn { background: none; border: none; font-size: 1.1rem; cursor: pointer; color: #10367D; padding: 8px; border-radius: 30px; transition: 0.2s; }
         .icon-btn:hover { background: #EBEBEB; transform: scale(1.1); }
         .search-input { margin-bottom: 12px; width: 100%; padding: 10px 16px; border-radius: 60px; border: 1.5px solid #e2e8f0; font-size: 14px; background: white; }
@@ -130,14 +134,18 @@
         .activity-item { padding: 8px 12px; border-bottom: 1px solid #EBEBEB; font-size: 12px; display: flex; gap: 10px; align-items: center; }
         .activity-time { color: #5a6e8a; font-size: 11px; min-width: 80px; }
         
+        /* Password Re-auth Modal */
+        .password-modal .modal-content { max-width: 400px; text-align: center; }
+        .password-modal .field-group { margin-bottom: 1.5rem; }
+        
         .modal { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 1500; visibility: hidden; opacity: 0; transition: 0.2s; }
         .modal.active { visibility: visible; opacity: 1; }
         .modal-content { background: white; border-radius: 48px; max-width: 500px; width: 90%; padding: 2rem; max-height: 80vh; overflow-y: auto; animation: scalePop 0.3s ease-out; }
         .modal-content h3 { font-size: 1.6rem; font-weight: 700; color: #10367D; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 12px; }
         .field-group { margin-bottom: 1.2rem; }
         .field-group label { display: block; font-weight: 500; margin-bottom: 6px; color: #1e293b; font-size: 0.85rem; }
-        .field-group input { width: 100%; padding: 12px 18px; border-radius: 60px; border: 1.5px solid #e2e8f0; font-family: 'Poppins'; font-size: 0.95rem; }
-        .field-group input:focus { border-color: #10367D; outline: none; }
+        .field-group input, .field-group select { width: 100%; padding: 12px 18px; border-radius: 60px; border: 1.5px solid #e2e8f0; font-family: 'Poppins'; font-size: 0.95rem; }
+        .field-group input:focus, .field-group select:focus { border-color: #10367D; outline: none; }
         .modal-buttons { display: flex; gap: 12px; justify-content: flex-end; margin-top: 1.8rem; }
         .member-detail-content p { margin: 14px 0; padding: 8px 0; border-bottom: 1px solid #edf2f7; display: flex; justify-content: space-between; font-size: 1rem; }
         .member-row { cursor: pointer; transition: 0.1s; }
@@ -167,6 +175,13 @@
         .footer-signature { margin-top: 2rem; display: flex; justify-content: space-between; border-top: 2px dashed #cbd5e1; padding-top: 1.2rem; font-size: 10px; flex-wrap: wrap; }
         .preview-area { background: #fefefe; border-radius: 24px; padding: 1rem; margin-top: 1rem; border: 1px solid #eef2f8; overflow-x: auto; }
         .document-actions { display: flex; gap: 8px; margin: 12px 0; flex-wrap: wrap; }
+        
+        .role-badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 600; }
+        .role-admin { background: #10367D; color: white; }
+        .role-treasurer { background: #A5CE00; color: #10367D; }
+        .role-chair { background: #ffb347; color: #10367D; }
+        .role-youth { background: #3b82f6; color: white; }
+        .role-member { background: #e2e8f0; color: #10367D; }
     </style>
 </head>
 <body>
@@ -179,7 +194,13 @@
         <input type="password" id="loginPassword" placeholder="Password">
         <div id="registerFields" style="display: none;">
             <input type="text" id="registerFullName" placeholder="Full Name">
-            <select id="registerRole"><option value="member">Member</option><option value="admin">Admin</option></select>
+            <select id="registerRole">
+                <option value="member">Member</option>
+                <option value="treasurer">Treasurer</option>
+                <option value="chair">Family Chairperson</option>
+                <option value="youth">Youth Chairperson</option>
+                <option value="admin">Admin</option>
+            </select>
         </div>
         <button class="login-btn" id="doLoginBtn"><i class="fas fa-arrow-right-to-bracket"></i> <span id="loginBtnText">Login</span></button>
         <div><span class="switch-auth-mode" id="switchAuthMode">Create an account</span></div>
@@ -189,6 +210,16 @@
 </div>
 <div id="changePwdModal" class="modal"><div class="modal-content"><h3><i class="fas fa-lock"></i> Update Password</h3><div class="field-group"><label>Current Password</label><input type="password" id="currentPwd"></div><div class="field-group"><label>New Password</label><input type="password" id="newPwd"></div><div class="field-group"><label>Confirm Password</label><input type="password" id="confirmPwd"></div><div class="modal-buttons"><button id="savePwdBtn">Save</button><button id="closePwdModal" class="secondary">Cancel</button></div></div></div>
 <div id="forgotPwdModal" class="modal"><div class="modal-content"><h3><i class="fas fa-envelope"></i> Reset Password</h3><p>Enter your email address to receive a password reset link.</p><div class="field-group"><label>Email</label><input type="email" id="resetEmail" placeholder="your@email.com"></div><div class="modal-buttons"><button id="sendResetBtn">Send Reset Link</button><button id="closeForgotModal" class="secondary">Cancel</button></div></div></div>
+
+<!-- Password Re-authentication Modal -->
+<div id="reAuthModal" class="modal password-modal">
+    <div class="modal-content">
+        <h3><i class="fas fa-shield-alt"></i> Admin Verification</h3>
+        <p style="margin-bottom: 1rem; color: #5a6e8a;">Enter your password to access the transaction log</p>
+        <div class="field-group"><label>Password</label><input type="password" id="reAuthPassword" placeholder="Enter your password"></div>
+        <div class="modal-buttons"><button id="reAuthConfirmBtn">Verify</button><button id="reAuthCancelBtn" class="secondary">Cancel</button></div>
+    </div>
+</div>
 
 <div class="app-container" id="appContainer">
     <div class="mobile-top-bar">
@@ -202,6 +233,7 @@
         <div class="nav-item" data-page="events"><i class="fas fa-calendar-alt"></i><span> Events</span></div>
         <div class="nav-item" data-page="members" id="membersNavItem"><i class="fas fa-users"></i><span> Members</span></div>
         <div class="nav-item" data-page="contributions"><i class="fas fa-coins"></i><span> Contributions</span></div>
+        <div class="nav-item" data-page="transactionlog" id="transactionLogNavItem"><i class="fas fa-list-alt"></i><span> Transaction Log</span></div>
         <div class="nav-item" data-page="statements"><i class="fas fa-file-invoice"></i><span> Statements</span></div>
         <div class="nav-item" data-page="activity" id="activityNavItem"><i class="fas fa-history"></i><span> Activity Log</span></div>
         <div class="nav-item" data-page="settings" id="settingsNavItem"><i class="fas fa-cog"></i><span> Settings</span></div>
@@ -216,24 +248,48 @@
         </div>
         <div id="eventsPage" class="page" style="display:none;"><div class="card"><h2><i class="fas fa-calendar-alt"></i> Manage Events</h2><div class="form-group"><input type="text" id="newEventName" placeholder="Event Name"><input type="number" id="newEventTarget" placeholder="Target Amount (KES)"><button id="createEventBtn"><i class="fas fa-plus"></i> Create Event</button></div><div><label><input type="checkbox" id="showArchivedCheckbox"> Show Archived Events</label></div><input type="text" id="searchEventInput" class="search-input" placeholder="🔍 Search events..."><div class="table-wrapper"><div id="eventsListDiv"></div></div></div></div>
         <div id="membersPage" class="page" style="display:none;"><div class="card"><h2><i class="fas fa-users"></i> Family Members</h2><div class="form-group"><input type="text" id="newMemberName" placeholder="Full Name"><select id="memberStatusSelect"><option value="active">Active</option><option value="inactive">Inactive</option></select><button id="addMemberBtn"><i class="fas fa-user-plus"></i> Add Member</button><button id="bulkAddBtn" class="secondary"><i class="fas fa-layer-group"></i> Bulk Add Members</button></div><input type="text" id="searchMemberInput" class="search-input" placeholder="🔍 Search members..."><div class="table-wrapper"><div id="membersListDiv"></div></div><button id="toggleInactiveFilter" class="secondary" style="margin-top:12px;"><i class="fas fa-filter"></i> Show Inactive Only</button></div></div>
-        <div id="contributionsPage" class="page" style="display:none;"><div class="card"><h2><i class="fas fa-coins"></i> Record Contribution</h2><div class="form-group"><input type="text" id="memberSearchInput" class="search-input" placeholder="🔍 Search member..."><select id="contMemberSel" size="4" style="height:100px;"></select><input type="text" id="eventSearchInput" class="search-input" placeholder="🔍 Search event..."><select id="contEventSel" size="4" style="height:100px;"></select><input type="number" id="contAmount" placeholder="Amount (KES)"><input type="date" id="contDate"><button id="recordContBtn"><i class="fas fa-save"></i> Record</button></div><hr><h3>Event Summary</h3><select id="eventSummarySelect"></select><div class="document-actions"><button id="previewSummaryBtn"><i class="fas fa-eye"></i> Preview</button><button id="exportSummaryPdfBtn"><i class="fas fa-file-pdf"></i> PDF</button><button id="exportSummaryPngBtn"><i class="fas fa-image"></i> PNG</button><button id="exportSummaryExcelBtn"><i class="fas fa-file-excel"></i> Excel</button></div><div id="summaryPreviewArea" class="preview-area"></div><hr><h3>Transaction Log</h3><input type="text" id="transactionSearchInput" class="search-input" placeholder="🔍 Search transactions..."><div class="table-wrapper"><div id="contributionTableView"></div></div></div></div>
+        <div id="contributionsPage" class="page" style="display:none;"><div class="card"><h2><i class="fas fa-coins"></i> Record Contribution</h2><div class="form-group"><input type="text" id="memberSearchInput" class="search-input" placeholder="🔍 Search member..."><select id="contMemberSel" size="4" style="height:100px;"></select><input type="text" id="eventSearchInput" class="search-input" placeholder="🔍 Search event..."><select id="contEventSel" size="4" style="height:100px;"></select><input type="number" id="contAmount" placeholder="Amount (KES)"><input type="date" id="contDate"><button id="recordContBtn"><i class="fas fa-save"></i> Record</button></div><hr><h3>Event Summary</h3><select id="eventSummarySelect"></select><div class="document-actions"><button id="previewSummaryBtn"><i class="fas fa-eye"></i> Preview</button><button id="exportSummaryPdfBtn"><i class="fas fa-file-pdf"></i> PDF</button><button id="exportSummaryPngBtn"><i class="fas fa-image"></i> PNG</button><button id="exportSummaryExcelBtn"><i class="fas fa-file-excel"></i> Excel</button></div><div id="summaryPreviewArea" class="preview-area"></div></div></div>
+        <div id="transactionlogPage" class="page" style="display:none;">
+            <div class="card">
+                <h2><i class="fas fa-list-alt"></i> Transaction Log</h2>
+                <p style="margin-bottom:1rem; color:#5a6e8a;"><i class="fas fa-shield-alt"></i> Sensitive area - All transactions listed below can be edited or deleted</p>
+                <div class="form-group">
+                    <label>Filter by Event</label>
+                    <select id="txEventSelect">
+                        <option value="all">All Events</option>
+                    </select>
+                </div>
+                <input type="text" id="txSearchInput" class="search-input" placeholder="🔍 Search by member name or amount...">
+                <div id="transactionLogTable" class="table-wrapper"></div>
+            </div>
+        </div>
         <div id="statementsPage" class="page" style="display:none;">
             <div class="card"><h2>📄 Member Statement</h2><div class="form-group"><select id="stmtMemberSel"></select><input type="date" id="stmtFromDate"><input type="date" id="stmtToDate"><button id="todayBtn" class="secondary">Today</button><button id="clearDatesBtn" class="secondary">Clear</button></div><div class="document-actions"><button id="previewStmtBtn"><i class="fas fa-eye"></i> Preview</button><button id="downloadStmtBtn"><i class="fas fa-file-pdf"></i> PDF</button><button id="downloadStmtPngBtn"><i class="fas fa-image"></i> PNG</button></div><div id="statementPreviewArea" class="preview-area"></div></div>
             <div class="card"><h2>📌 Member Statement by Event</h2><div class="form-group"><select id="eventStmtMemberSel"></select><select id="eventStmtEventSel"></select></div><div class="document-actions"><button id="previewEventStmtBtn"><i class="fas fa-eye"></i> Preview</button><button id="downloadEventStmtBtn"><i class="fas fa-file-pdf"></i> PDF</button><button id="downloadEventStmtPngBtn"><i class="fas fa-image"></i> PNG</button></div><div id="eventStatementPreviewArea" class="preview-area"></div></div>
             <div class="card"><h2>📊 All Members Report</h2><div class="form-group"><select id="allMembersEventSelect"></select></div><div class="document-actions"><button id="generateAllMembersReportBtn"><i class="fas fa-file-pdf"></i> PDF</button><button id="generateAllMembersReportPngBtn"><i class="fas fa-image"></i> PNG</button></div><div id="allMembersReportPreview" class="preview-area"></div></div>
         </div>
         <div id="activityPage" class="page" style="display:none;"><div class="card"><h2><i class="fas fa-history"></i> Activity Log</h2><div id="activityLogList" class="activity-log"></div><button id="clearActivityBtn" class="secondary"><i class="fas fa-trash"></i> Clear All Activity</button></div></div>
-        <div id="settingsPage" class="page" style="display:none;"><div class="card"><h2><i class="fas fa-cog"></i> Settings</h2><div class="form-group"><label>Dark Mode</label><button id="darkModeToggleBtn" class="secondary"><i class="fas fa-moon"></i> Toggle Dark Mode</button></div><div class="form-group"><label>Export All Data (Backup)</label><button id="exportAllDataBtn"><i class="fas fa-download"></i> Export as JSON</button></div><div class="form-group"><label>Import Data (Restore)</label><input type="file" id="importFileInput" accept=".json"><button id="importDataBtn" class="secondary"><i class="fas fa-upload"></i> Import Backup</button></div><div class="form-group"><label>Manage Users</label><div id="usersListDiv" style="margin-top:8px; max-height:200px; overflow-y:auto;"></div><button id="addUserBtn" class="secondary"><i class="fas fa-user-plus"></i> Add New User</button></div></div></div>
+        <div id="settingsPage" class="page" style="display:none;"><div class="card"><h2><i class="fas fa-cog"></i> Settings</h2><div class="form-group"><label>Dark Mode</label><button id="darkModeToggleBtn" class="secondary"><i class="fas fa-moon"></i> Toggle Dark Mode</button></div><div class="form-group"><label>Export All Data (Backup)</label><button id="exportAllDataBtn"><i class="fas fa-download"></i> Export as JSON</button></div><div class="form-group"><label>Import Data (Restore)</label><input type="file" id="importFileInput" accept=".json"><button id="importDataBtn" class="secondary"><i class="fas fa-upload"></i> Import Backup</button></div><div class="form-group"><label>Manage Users</label><div id="usersListDiv" style="margin-top:8px; max-height:200px; overflow-y:auto;"></div><button id="addUserBtn" class="secondary"><i class="fas fa-user-plus"></i> Add New User</button></div><div class="form-group"><label>Manage Member Roles</label><div id="memberRolesDiv" style="margin-top:8px; max-height:200px; overflow-y:auto;"></div></div></div></div>
     </div>
 </div>
 
 <div id="loadingOverlay" class="loading-overlay"><div class="spinner"></div></div>
 
 <script>
-    // ===== MULTI-USER SYSTEM =====
+    // ===== ROLES DEFINITION =====
+    const ROLES = {
+        admin: { name: "Admin", level: 5, canEditAll: true, canManageUsers: true, canEditContributions: true },
+        treasurer: { name: "Treasurer", level: 4, canEditAll: true, canManageUsers: false, canEditContributions: true },
+        chair: { name: "Family Chair", level: 3, canEditAll: false, canManageUsers: false, canEditContributions: false },
+        youth: { name: "Youth Chair", level: 2, canEditAll: false, canManageUsers: false, canEditContributions: false },
+        member: { name: "Member", level: 1, canEditAll: false, canManageUsers: false, canEditContributions: false }
+    };
+    
     let users = [
         { id: 1, username: "admin", password: "admin123", fullName: "System Administrator", role: "admin", createdAt: new Date().toISOString() },
-        { id: 2, username: "felix", password: "felix123", fullName: "Felix Liyai", role: "admin", createdAt: new Date().toISOString() }
+        { id: 2, username: "felix", password: "felix123", fullName: "Felix Liyai", role: "treasurer", createdAt: new Date().toISOString() },
+        { id: 3, username: "alice", password: "alice123", fullName: "Alice Linakha", role: "chair", createdAt: new Date().toISOString() },
+        { id: 4, username: "youth", password: "youth123", fullName: "Youth Representative", role: "youth", createdAt: new Date().toISOString() }
     ];
     
     let currentUser = null;
@@ -242,6 +298,50 @@
     let showArchived = false;
     let myContributionsFilter = false;
     let isRegisterMode = false;
+    let isTransactionLogUnlocked = false;
+    
+    function showReAuthModal(callback) {
+        document.getElementById("reAuthPassword").value = "";
+        document.getElementById("reAuthModal").classList.add("active");
+        const confirmBtn = document.getElementById("reAuthConfirmBtn");
+        const cancelBtn = document.getElementById("reAuthCancelBtn");
+        const newConfirm = confirmBtn.cloneNode(true);
+        const newCancel = cancelBtn.cloneNode(true);
+        confirmBtn.parentNode.replaceChild(newConfirm, confirmBtn);
+        cancelBtn.parentNode.replaceChild(newCancel, cancelBtn);
+        newConfirm.onclick = () => {
+            const pwd = document.getElementById("reAuthPassword").value;
+            if (pwd === currentUser?.password) {
+                document.getElementById("reAuthModal").classList.remove("active");
+                isTransactionLogUnlocked = true;
+                if (callback) callback();
+                showToast("Access granted", "success");
+            } else {
+                showToast("Incorrect password! Access denied.", "error");
+            }
+        };
+        newCancel.onclick = () => {
+            document.getElementById("reAuthModal").classList.remove("active");
+            isTransactionLogUnlocked = false;
+        };
+    }
+    
+    function canEdit() {
+        return currentUser && (currentUser.role === 'admin' || currentUser.role === 'treasurer');
+    }
+    
+    function canEditContributions() {
+        return currentUser && (currentUser.role === 'admin' || currentUser.role === 'treasurer');
+    }
+    
+    function canManageUsers() {
+        return currentUser && currentUser.role === 'admin';
+    }
+    
+    function getRoleBadgeClass(role) {
+        const classes = { admin: 'role-admin', treasurer: 'role-treasurer', chair: 'role-chair', youth: 'role-youth', member: 'role-member' };
+        return classes[role] || 'role-member';
+    }
     
     function saveToLocal() {
         localStorage.setItem("linakha_users", JSON.stringify(users));
@@ -275,10 +375,10 @@
     }
     
     function addActivity(action, details) {
-        activityLog.unshift({ id: Date.now(), time: new Date().toISOString(), action: action, details: details, user: currentUser?.username || "system" });
+        activityLog.unshift({ id: Date.now(), time: new Date().toISOString(), action: action, details: details, user: currentUser?.fullName || "system" });
         if (activityLog.length > 200) activityLog = activityLog.slice(0, 200);
         saveToLocal();
-        renderActivityLog();
+        if (document.getElementById("activityLogList")) renderActivityLog();
     }
     
     function showToast(message, type = "info") {
@@ -295,15 +395,23 @@
     function getEventName(id) { let e = events.find(e=>e.id==id); return e ? e.name : "?"; }
     function toTitle(s) { return s.replace(/\b\w/g, l=>l.toUpperCase()); }
     
-    function updateAdminMenuVisibility() {
+    function updateMenuVisibility() {
         const isAdmin = currentUser?.role === 'admin';
+        const isTreasurer = currentUser?.role === 'treasurer';
+        const canAccessMembers = isAdmin || isTreasurer;
+        const canAccessActivity = isAdmin;
+        const canAccessSettings = isAdmin;
+        const canAccessTransactionLog = isAdmin || isTreasurer;
+        
         const membersNav = document.getElementById("membersNavItem");
         const activityNav = document.getElementById("activityNavItem");
         const settingsNav = document.getElementById("settingsNavItem");
+        const transactionLogNav = document.getElementById("transactionLogNavItem");
         
-        if (membersNav) membersNav.style.display = isAdmin ? "flex" : "none";
-        if (activityNav) activityNav.style.display = isAdmin ? "flex" : "none";
-        if (settingsNav) settingsNav.style.display = isAdmin ? "flex" : "none";
+        if (membersNav) membersNav.style.display = canAccessMembers ? "flex" : "none";
+        if (activityNav) activityNav.style.display = canAccessActivity ? "flex" : "none";
+        if (settingsNav) settingsNav.style.display = canAccessSettings ? "flex" : "none";
+        if (transactionLogNav) transactionLogNav.style.display = canAccessTransactionLog ? "flex" : "none";
     }
     
     function renderActivityLog() {
@@ -315,26 +423,47 @@
     
     function renderUsersList() {
         const container = document.getElementById("usersListDiv");
-        if (!container) return;
-        if (users.length === 0) { container.innerHTML = '<div class="empty-state"><i class="fas fa-users"></i><p>No users yet</p></div>'; return; }
+        if (!container || !canManageUsers()) return;
         container.innerHTML = users.map(u => `
             <div style="display:flex; justify-content:space-between; align-items:center; padding:8px; border-bottom:1px solid #EBEBEB;">
-                <div><strong>${u.fullName}</strong><br><small>@${u.username} | ${u.role}</small></div>
-                <div>
-                    <button class="icon-btn" onclick="editUser(${u.id})"><i class="fas fa-edit"></i></button>
-                    <button class="icon-btn" onclick="deleteUser(${u.id})" style="color:#ef4444;"><i class="fas fa-trash"></i></button>
-                </div>
+                <div><strong>${u.fullName}</strong><br><small>@${u.username} | <span class="role-badge ${getRoleBadgeClass(u.role)}">${ROLES[u.role]?.name || u.role}</span></small></div>
+                <div><button class="icon-btn" onclick="editUser(${u.id})"><i class="fas fa-edit"></i></button><button class="icon-btn" onclick="deleteUser(${u.id})" style="color:#ef4444;"><i class="fas fa-trash"></i></button></div>
             </div>
         `).join('');
     }
     
+    function renderMemberRolesList() {
+        const container = document.getElementById("memberRolesDiv");
+        if (!container || !canManageUsers()) return;
+        container.innerHTML = members.map(m => `
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:8px; border-bottom:1px solid #EBEBEB;">
+                <div><strong>${m.name}</strong><br><small>Current: <span class="role-badge ${getRoleBadgeClass(m.role?.toLowerCase() || 'member')}">${m.role || 'Member'}</span></small></div>
+                <div><select id="roleSelect_${m.id}" style="padding:6px 12px; border-radius:20px;"><option value="member" ${(m.role === 'Member' || m.role === 'member') ? 'selected' : ''}>Member</option><option value="treasurer" ${m.role === 'Treasurer' || m.role === 'treasurer' ? 'selected' : ''}>Treasurer</option><option value="chair" ${m.role === 'Family Chair' || m.role === 'chair' ? 'selected' : ''}>Family Chairperson</option><option value="youth" ${m.role === 'Youth Chair' || m.role === 'youth' ? 'selected' : ''}>Youth Chairperson</option></select><button class="icon-btn" onclick="updateMemberRole(${m.id})"><i class="fas fa-save"></i></button></div>
+            </div>
+        `).join('');
+    }
+    
+    window.updateMemberRole = (id) => {
+        const select = document.getElementById(`roleSelect_${id}`);
+        const newRole = select.value;
+        const roleNames = { member: "Member", treasurer: "Treasurer", chair: "Family Chair", youth: "Youth Chair" };
+        const member = members.find(m => m.id === id);
+        member.role = roleNames[newRole];
+        addActivity("Role Updated", `${member.name} is now ${roleNames[newRole]}`);
+        saveToLocal();
+        renderMembersList();
+        renderMemberRolesList();
+        showToast(`${member.name}'s role updated`, "success");
+    };
+    
     window.editUser = (id) => {
+        if (!canManageUsers()) return;
         let u = users.find(u => u.id === id);
         showCustomModal('Edit User', [
             { label: 'Full Name', key: 'fullName', value: u.fullName },
             { label: 'Username', key: 'username', value: u.username },
             { label: 'New Password (leave blank to keep same)', key: 'password', value: '', type: 'password' },
-            { label: 'Role', key: 'role', value: u.role, type: 'select', options: ['admin', 'member'] }
+            { label: 'Role', key: 'role', value: u.role, type: 'select', options: ['admin', 'treasurer', 'chair', 'youth', 'member'] }
         ], (values) => {
             if (values.fullName && values.fullName.trim()) u.fullName = values.fullName.trim();
             if (values.username && values.username.trim()) u.username = values.username.trim();
@@ -347,13 +476,9 @@
     };
     
     window.deleteUser = (id) => {
+        if (!canManageUsers()) return;
         if (id === currentUser?.id) { showToast("Cannot delete yourself", "error"); return; }
-        if (confirm("Delete this user?")) {
-            users = users.filter(u => u.id !== id);
-            saveToLocal();
-            renderUsersList();
-            showToast("User deleted", "success");
-        }
+        if (confirm("Delete this user?")) { users = users.filter(u => u.id !== id); saveToLocal(); renderUsersList(); showToast("User deleted", "success"); }
     };
     
     function showCustomModal(title, fields, onSave) {
@@ -377,12 +502,11 @@
     function showMemberDetailModal(member, total) {
         let modalDiv = document.createElement('div');
         modalDiv.className = 'modal active';
-        modalDiv.innerHTML = `<div class="modal-content" style="max-width:500px;"><h3><i class="fas fa-user-circle"></i> ${member.name}</h3><div class="member-detail-content"><p><strong>Role</strong> <span>${member.role}</span></p><p><strong>Status</strong> <span class="badge">${member.status}</span></p><p><strong>Active since</strong> <span>${member.activeSince || 'N/A'}</span></p><p><strong>Inactive since</strong> <span>${member.inactiveSince || '—'}</span></p><p><strong>Total contributed</strong> <span>${formatKES(total)}</span></p></div><div class="modal-buttons"><button id="closeDetailModal">Close</button></div></div>`;
+        modalDiv.innerHTML = `<div class="modal-content" style="max-width:500px;"><h3><i class="fas fa-user-circle"></i> ${member.name}</h3><div class="member-detail-content"><p><strong>Role</strong> <span class="role-badge ${getRoleBadgeClass(member.role?.toLowerCase() || 'member')}">${member.role || 'Member'}</span></p><p><strong>Status</strong> <span class="badge">${member.status}</span></p><p><strong>Active since</strong> <span>${member.activeSince || 'N/A'}</span></p><p><strong>Inactive since</strong> <span>${member.inactiveSince || '—'}</span></p><p><strong>Total contributed</strong> <span>${formatKES(total)}</span></p></div><div class="modal-buttons"><button id="closeDetailModal">Close</button></div></div>`;
         document.body.appendChild(modalDiv);
         modalDiv.querySelector('#closeDetailModal').onclick = () => modalDiv.remove();
     }
     
-    // Render functions
     function refreshAll() {
         renderStatsAndCharts();
         renderEventsList();
@@ -396,8 +520,88 @@
         renderEventStmtSelectors();
         renderActivityLog();
         renderUsersList();
-        updateAdminMenuVisibility();
+        renderMemberRolesList();
+        updateMenuVisibility();
+        // Only render transaction log if already unlocked, otherwise show locked message
+        if (isTransactionLogUnlocked) {
+            renderTransactionLogPage();
+        } else {
+            const txContainer = document.getElementById("transactionLogTable");
+            if (txContainer && document.getElementById("transactionlogPage").style.display !== "none") {
+                txContainer.innerHTML = '<div class="empty-state"><i class="fas fa-lock"></i><p>Transaction log is locked. Please verify your password to access.</p><button class="secondary" onclick="unlockTransactionLog()" style="margin-top:16px;"><i class="fas fa-key"></i> Unlock with Password</button></div>';
+            }
+        }
     }
+    
+    window.unlockTransactionLog = () => {
+        showReAuthModal(() => {
+            renderTransactionLogPage();
+        });
+    };
+    
+    function renderTransactionLogPage() {
+        const eventSelect = document.getElementById("txEventSelect");
+        if (eventSelect) {
+            eventSelect.innerHTML = '<option value="all">All Events</option>' + events.map(e => `<option value="${e.id}">${toTitle(e.name)}</option>`).join('');
+            eventSelect.onchange = () => renderTransactionLogTable();
+        }
+        renderTransactionLogTable();
+    }
+    
+    function renderTransactionLogTable() {
+        const container = document.getElementById("transactionLogTable");
+        if (!container) return;
+        const eventId = document.getElementById("txEventSelect")?.value;
+        let filtered = [...contributions].sort((a,b)=>new Date(b.date)-new Date(a.date));
+        if (eventId && eventId !== "all") filtered = filtered.filter(c => c.eventId === parseInt(eventId));
+        const search = document.getElementById("txSearchInput")?.value.toLowerCase() || "";
+        if (search) filtered = filtered.filter(c => getMemberName(c.memberId).toLowerCase().includes(search) || formatKES(c.amount).includes(search) || getEventName(c.eventId).toLowerCase().includes(search));
+        
+        if (filtered.length === 0) {
+            container.innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i><p>No transactions found</p></div>';
+            return;
+        }
+        
+        let html = `<table class="transaction-table"><thead><tr><th>Date</th><th>Member</th><th>Event</th><th>Amount</th>${canEditContributions() ? '<th>Actions</th>' : ''}</tr></thead><tbody>`;
+        filtered.forEach(c => {
+            html += `<tr>
+                <td>${formatDate(c.date)}</td>
+                <td>${getMemberName(c.memberId)}</td>
+                <td>${toTitle(getEventName(c.eventId))}</td>
+                <td style="font-weight:600;">${formatKES(c.amount)}</td>
+                ${canEditContributions() ? `<td><button class="icon-btn" onclick="editContributionFromLog(${c.id})"><i class="fas fa-edit"></i></button><button class="icon-btn" onclick="deleteContributionFromLog(${c.id})" style="color:#ef4444;"><i class="fas fa-trash"></i></button></td>` : ''}
+            </tr>`;
+        });
+        html += `</tbody></table>`;
+        container.innerHTML = html;
+    }
+    
+    window.editContributionFromLog = (id) => {
+        showReAuthModal(() => {
+            let c = contributions.find(c => c.id === id);
+            showCustomModal('Edit Contribution', [
+                { label: 'Amount (KES)', key: 'amount', value: c.amount, type: 'number' },
+                { label: 'Date', key: 'date', value: c.date, type: 'date' }
+            ], (values) => {
+                if (values.amount && !isNaN(parseFloat(values.amount))) c.amount = parseFloat(values.amount);
+                if (values.date) c.date = values.date;
+                addActivity("Contribution Edited", `Contribution for ${getMemberName(c.memberId)} updated to ${formatKES(c.amount)}`);
+                saveToLocal(); refreshAll();
+                showToast("Contribution updated", "success");
+            });
+        });
+    };
+    
+    window.deleteContributionFromLog = (id) => {
+        showReAuthModal(() => {
+            if (confirm("Delete this contribution permanently?")) {
+                contributions = contributions.filter(c => c.id !== id);
+                addActivity("Contribution Deleted", `Contribution removed`);
+                saveToLocal(); refreshAll();
+                showToast("Contribution deleted", "success");
+            }
+        });
+    };
     
     function renderStatsAndCharts() {
         let total=contributions.reduce((s,c)=>s+c.amount,0), activeCount=members.filter(m=>m.status=="active").length;
@@ -411,13 +615,14 @@
     function renderEventsList() {
         let search = document.getElementById("searchEventInput")?.value || "";
         let filtered = events.filter(e => (showArchived ? true : !e.archived) && (search ? e.name.toLowerCase().includes(search.toLowerCase()) : true));
-        let html=`<table><thead><tr><th>Event</th><th>Target</th><th>Collected</th><th>Progress</th><th>Actions</th></tr></thead><tbody>`;
-        filtered.forEach(e=>{ let total=contributions.filter(c=>c.eventId===e.id).reduce((s,c)=>s+c.amount,0); let percent = (total/e.target)*100; html+=`<tr><td><i class="fas fa-calendar-alt"></i> ${toTitle(e.name)}${e.archived ? ' 📦 Archived' : ''}</td><td>${formatKES(e.target)}</td><td>${formatKES(total)}</td><td><div class="progress-bar-container"><div class="progress-bar" style="width:${Math.min(percent,100)}%"></div></div><small>${percent.toFixed(1)}%</small></td><td><button class="icon-btn" onclick="editEvent(${e.id})"><i class="fas fa-edit"></i></button><button class="icon-btn" onclick="archiveEvent(${e.id})"><i class="fas fa-archive"></i></button><button class="icon-btn" onclick="deleteEvent(${e.id})"><i class="fas fa-trash"></i></button></td>`; });
+        let html=`<table class="events-table"><thead><tr><th>Event</th><th>Target</th><th>Collected</th><th>Progress</th><th>Actions</th></tr></thead><tbody>`;
+        filtered.forEach(e=>{ let total=contributions.filter(c=>c.eventId===e.id).reduce((s,c)=>s+c.amount,0); let percent = (total/e.target)*100; html+=`<tr><td><i class="fas fa-calendar-alt"></i> ${toTitle(e.name)}${e.archived ? ' 📦 Archived' : ''}</td><td>${formatKES(e.target)}</td><td>${formatKES(total)}</td><td><div class="progress-bar-container"><div class="progress-bar" style="width:${Math.min(percent,100)}%"></div></div><small>${percent.toFixed(1)}%</small></td><td><button class="icon-btn" onclick="editEvent(${e.id})"><i class="fas fa-edit"></i></button><button class="icon-btn" onclick="archiveEvent(${e.id})"><i class="fas fa-archive"></i></button>${canEdit() ? `<button class="icon-btn" onclick="deleteEvent(${e.id})"><i class="fas fa-trash"></i></button>` : ''}</td></tr>`; });
         html+=`</tbody></table>`; document.getElementById("eventsListDiv").innerHTML = html;
     }
     
-    window.archiveEvent = (id) => { let e=events.find(e=>e.id===id); e.archived = !e.archived; addActivity("Event Archived", `${e.name} ${e.archived ? 'archived' : 'restored'}`); saveToLocal(); refreshAll(); };
+    window.archiveEvent = (id) => { if(!canEdit()) return; let e=events.find(e=>e.id===id); e.archived = !e.archived; addActivity("Event Archived", `${e.name} ${e.archived ? 'archived' : 'restored'}`); saveToLocal(); refreshAll(); };
     window.editEvent = (id) => {
+        if(!canEdit()) return;
         let e = events.find(e => e.id === id);
         showCustomModal('Edit Event', [{ label: 'Event Name', key: 'name', value: e.name }, { label: 'Target Amount (KES)', key: 'target', value: e.target, type: 'number' }], (values) => {
             if (values.name && values.name.trim()) e.name = values.name.trim();
@@ -427,23 +632,24 @@
             showToast("Event updated", "success");
         });
     };
-    window.deleteEvent = (id) => { if (confirm("Delete event? All contributions will be removed.")) { let e = events.find(e => e.id === id); events = events.filter(e => e.id !== id); contributions = contributions.filter(c => c.eventId !== id); addActivity("Event Deleted", `${e.name} removed`); saveToLocal(); refreshAll(); showToast("Event deleted", "success"); } };
+    window.deleteEvent = (id) => { if(!canEdit()) return; if (confirm("Delete event? All contributions will be removed.")) { let e = events.find(e => e.id === id); events = events.filter(e => e.id !== id); contributions = contributions.filter(c => c.eventId !== id); addActivity("Event Deleted", `${e.name} removed`); saveToLocal(); refreshAll(); showToast("Event deleted", "success"); } };
     
     function renderMembersList() {
         let filtered = members.filter(m=>{ if(showInactiveOnly && m.status!=="inactive") return false; if(document.getElementById("searchMemberInput")?.value && !m.name.toLowerCase().includes(document.getElementById("searchMemberInput").value.toLowerCase())) return false; return true; });
-        let html=`<table><thead><tr><th>Name</th><th>Role</th><th>Status</th><th>Total</th><th>Actions</th></tr></thead><tbody>`;
-        filtered.forEach(m=>{ let total=contributions.filter(c=>c.memberId===m.id).reduce((s,c)=>s+c.amount,0); html+=`<tr class="member-row" onclick="showMemberDetails(${m.id})"><td>${m.name} ${m.role==='Treasurer'?'👑':''}</td><td>${m.role}</td><td><span class="badge">${m.status}</span></td><td>${formatKES(total)}</td><td><button class="icon-btn" onclick="event.stopPropagation();editMember(${m.id})"><i class="fas fa-edit"></i></button><button class="icon-btn" onclick="event.stopPropagation();toggleMemberStatus(${m.id})"><i class="fas fa-exchange-alt"></i></button><button class="icon-btn" onclick="event.stopPropagation();deleteMember(${m.id})"><i class="fas fa-trash"></i></button></td>`; });
+        let html=`<table class="members-table"><thead><tr><th>Name</th><th>Role</th><th>Status</th><th>Total</th><th>Actions</th></tr></thead><tbody>`;
+        filtered.forEach(m=>{ let total=contributions.filter(c=>c.memberId===m.id).reduce((s,c)=>s+c.amount,0); html+=`<tr class="member-row" onclick="showMemberDetails(${m.id})"><td>${m.name} ${m.role==='Treasurer'?'👑':''}</td><td><span class="role-badge ${getRoleBadgeClass(m.role?.toLowerCase() || 'member')}">${m.role || 'Member'}</span></td><td><span class="badge">${m.status}</span></td><td>${formatKES(total)}</td><td><button class="icon-btn" onclick="event.stopPropagation();editMember(${m.id})"><i class="fas fa-edit"></i></button><button class="icon-btn" onclick="event.stopPropagation();toggleMemberStatus(${m.id})"><i class="fas fa-exchange-alt"></i></button>${canEdit() ? `<button class="icon-btn" onclick="event.stopPropagation();deleteMember(${m.id})"><i class="fas fa-trash"></i></button>` : ''}</td></tr>`; });
         html+=`</tbody></table>`; document.getElementById("membersListDiv").innerHTML = html;
     }
     
     window.editMember = (id) => {
+        if(!canEdit()) return;
         let m = members.find(m => m.id === id);
         showCustomModal('Edit Member', [{ label: 'Member Name', key: 'name', value: m.name }], (values) => {
             if (values.name && values.name.trim()) { m.name = values.name.trim(); addActivity("Member Edited", `${m.name} renamed`); saveToLocal(); refreshAll(); showToast("Member updated", "success"); }
         });
     };
-    window.toggleMemberStatus = (id) => { let m = members.find(m => m.id === id); m.status = m.status === "active" ? "inactive" : "active"; addActivity("Member Status Changed", `${m.name} is now ${m.status}`); saveToLocal(); refreshAll(); showToast(`Member ${m.status}`, "success"); };
-    window.deleteMember = (id) => { if (confirm("Remove member? This will also delete all their contributions.")) { let m = members.find(m => m.id === id); members = members.filter(m => m.id !== id); contributions = contributions.filter(c => c.memberId !== id); addActivity("Member Deleted", `${m.name} removed`); saveToLocal(); refreshAll(); showToast("Member removed", "success"); } };
+    window.toggleMemberStatus = (id) => { if(!canEdit()) return; let m = members.find(m => m.id === id); m.status = m.status === "active" ? "inactive" : "active"; addActivity("Member Status Changed", `${m.name} is now ${m.status}`); saveToLocal(); refreshAll(); showToast(`Member ${m.status}`, "success"); };
+    window.deleteMember = (id) => { if(!canEdit()) return; if (confirm("Remove member? This will also delete all their contributions.")) { let m = members.find(m => m.id === id); members = members.filter(m => m.id !== id); contributions = contributions.filter(c => c.memberId !== id); addActivity("Member Deleted", `${m.name} removed`); saveToLocal(); refreshAll(); showToast("Member removed", "success"); } };
     window.showMemberDetails = (id) => { let m = members.find(m => m.id === id); let total = contributions.filter(c => c.memberId === id).reduce((s, c) => s + c.amount, 0); showMemberDetailModal(m, total); };
     
     function renderContributionTable() { 
@@ -452,8 +658,8 @@
         let filtered=contributions.filter(c=>c.eventId===eventId).sort((a,b)=>new Date(a.date)-new Date(b.date));
         let search = document.getElementById("transactionSearchInput")?.value.toLowerCase() || "";
         if(search) filtered = filtered.filter(c => getMemberName(c.memberId).toLowerCase().includes(search) || formatKES(c.amount).includes(search));
-        let html=`<h4>${toTitle(getEventName(eventId))} - Transactions</h4><div class="table-wrapper"><table><thead><tr><th>Date</th><th>Member</th><th>Amount</th></tr></thead><tbody>`;
-        filtered.forEach(c=>html+=`<tr><td>${formatDate(c.date)}</td><td>${getMemberName(c.memberId)}</td><td>${formatKES(c.amount)}</td>`);
+        let html=`<h4>${toTitle(getEventName(eventId))} - Transactions</h4><div class="table-wrapper"><table><thead><tr><th>Date</th><th>Member</th><th>Amount</th></thead><tbody>`;
+        filtered.forEach(c=>html+=`<tr><td>${formatDate(c.date)}</td><td>${getMemberName(c.memberId)}</td><td>${formatKES(c.amount)}</td></tr>`);
         html+=`</tbody></table></div>`; document.getElementById("contributionTableView").innerHTML=html; 
     }
     
@@ -461,7 +667,7 @@
         let recent=[...contributions].reverse().slice(0,6);
         if(myContributionsFilter && currentUser) recent = recent.filter(c => getMemberName(c.memberId) === currentUser.fullName);
         let html=`<div class="table-wrapper"><table><thead><tr><th>Date</th><th>Member</th><th>Event</th><th>Amount</th></tr></thead><tbody>`;
-        recent.forEach(c=>html+=`<tr><td>${formatDate(c.date)}</td><td>${getMemberName(c.memberId)}</td><td>${toTitle(getEventName(c.eventId))}</td><td>${formatKES(c.amount)}</td>`);
+        recent.forEach(c=>html+=`<tr><td>${formatDate(c.date)}</td><td>${getMemberName(c.memberId)}</td><td>${toTitle(getEventName(c.eventId))}</td><td>${formatKES(c.amount)}</td></tr>`);
         if(recent.length===0) html=`<div class="empty-state"><i class="fas fa-inbox"></i><p>No contributions yet</p></div>`;
         else html+=`</tbody></table></div>`; document.getElementById("recentTable").innerHTML=html;
     }
@@ -484,7 +690,7 @@
     function attachSearchEvents() {
         document.getElementById("searchEventInput").oninput = () => renderEventsList();
         document.getElementById("searchMemberInput").oninput = () => renderMembersList();
-        document.getElementById("transactionSearchInput").oninput = () => renderContributionTable();
+        document.getElementById("txSearchInput").oninput = () => renderTransactionLogTable();
         document.getElementById("memberSearchInput").oninput = () => { let s=document.getElementById("memberSearchInput").value.toLowerCase(); let sel=document.getElementById("contMemberSel"); for(let opt of sel.options) opt.style.display = opt.text.toLowerCase().includes(s) ? "" : "none"; };
         document.getElementById("eventSearchInput").oninput = () => { let s=document.getElementById("eventSearchInput").value.toLowerCase(); let sel=document.getElementById("contEventSel"); for(let opt of sel.options) opt.style.display = opt.text.toLowerCase().includes(s) ? "" : "none"; };
         document.getElementById("showArchivedCheckbox").onchange = (e) => { showArchived = e.target.checked; renderEventsList(); };
@@ -493,14 +699,14 @@
         document.getElementById("myContributionsBtn").onclick = () => { myContributionsFilter = !myContributionsFilter; renderRecentTable(); showToast(myContributionsFilter ? "Showing your contributions only" : "Showing all contributions", "info"); };
     }
     
-    // Document generators
+    // Document generators (preserved)
     function generateSummaryCard(eventId) {
         let eventObj=events.find(e=>e.id===eventId); if(!eventObj) return null;
         let eventContribs=contributions.filter(c=>c.eventId===eventId);
         let memberTotals={}; eventContribs.forEach(c=>{ memberTotals[c.memberId]=(memberTotals[c.memberId]||0)+c.amount; });
         let totalEvent=eventContribs.reduce((s,c)=>s+c.amount,0);
         let rows=''; for(let mid in memberTotals) rows+=`<tr><td>${getMemberName(parseInt(mid))}</td><td style="text-align:right;">${formatKES(memberTotals[mid])}</td></tr>`;
-        return `<div id="summaryCard" class="print-document"><div class="event-summary-header"><div class="event-name">${toTitle(eventObj.name)}</div><div class="brand-small">Linakha Family • Contribution Summary</div></div><div class="info-rounded"><div class="info-chip"><strong>Total Collected</strong><span>${formatKES(totalEvent)}</span></div><div class="info-chip"><strong>Target</strong><span>${formatKES(eventObj.target)}</span></div></div><table class="invoice-table"><thead><tr><th>Member Name</th><th>Total Contribution (KES)</th></tr></thead><tbody>${rows}</tbody></table><div class="total-glam"><strong>GRAND TOTAL: ${formatKES(totalEvent)}</strong></div><div class="footer-signature"><span><i class="fas fa-phone"></i> +254112598008 | linakha.family</span><span>Thank you for your contribution, let's grow together.</span></div></div>`;
+        return `<div id="summaryCard" class="print-document"><div class="event-summary-header"><div class="event-name">${toTitle(eventObj.name)}</div><div class="brand-small">Linakha Family • Contribution Summary</div></div><div class="info-rounded"><div class="info-chip"><strong>Total Collected</strong><span>${formatKES(totalEvent)}</span></div><div class="info-chip"><strong>Target</strong><span>${formatKES(eventObj.target)}</span></div></div><table class="invoice-table"><thead><tr><th>Member Name</th><th>Total Contribution (KES)</th></tr></thead><tbody>${rows}</tbody></td><div class="total-glam"><strong>GRAND TOTAL: ${formatKES(totalEvent)}</strong></div><div class="footer-signature"><span><i class="fas fa-phone"></i> +254112598008 | linakha.family</span><span>Thank you for your contribution, let's grow together.</span></div></div>`;
     }
     
     function generateMemberStatement(memberId, fromDate, toDate) {
@@ -510,7 +716,7 @@
         let totalAmount=filtered.reduce((s,c)=>s+c.amount,0);
         let invId="LNH-"+Math.floor(Math.random()*10000);
         let eventsRows=''; for(let eid in eventMap) eventsRows+=`<tr><td>${toTitle(getEventName(parseInt(eid)))}</td><td style="text-align:right;">${formatKES(eventMap[eid])}</td></tr>`;
-        return `<div id="statementA4" class="print-document"><div class="statement-header"><div><h2>LINAKHA FAMILY</h2><p>Financial Statement</p></div><div><strong>#${invId}</strong><br>${new Date().toLocaleDateString()}</div></div><div class="info-rounded"><div class="info-chip"><strong>Member</strong><span>${member.name}</span></div><div class="info-chip"><strong>Period</strong><span>${formatDate(fromDate)} to ${formatDate(toDate)}</span></div><div class="info-chip"><strong>Status</strong><span>${member.status}</span></div></div><table class="invoice-table"><thead><tr><th>DATE</th><th>EVENT</th><th>AMOUNT (KES)</th></tr></thead><tbody>${filtered.map(c=>`<tr><td>${formatDate(c.date)}</td><td>${toTitle(getEventName(c.eventId))}</td><td style="text-align:right;">${formatKES(c.amount)}</td></tr>`).join('')}</tbody></table><div class="info-chip" style="margin:1rem 0;"><strong>Event Summary</strong><table style="width:100%; margin-top:8px;">${eventsRows}</table></div><div class="total-glam"><strong>TOTAL CONTRIBUTION: ${formatKES(totalAmount)}</strong></div><div class="footer-signature"><span><i class="fas fa-phone"></i> +254112598008 | linakha.family</span><span>Thank you for your contribution, let's grow together.</span></div></div>`;
+        return `<div id="statementA4" class="print-document"><div class="statement-header"><div><h2>LINAKHA FAMILY</h2><p>Financial Statement</p></div><div><strong>#${invId}</strong><br>${new Date().toLocaleDateString()}</div></div><div class="info-rounded"><div class="info-chip"><strong>Member</strong><span>${member.name}</span></div><div class="info-chip"><strong>Period</strong><span>${formatDate(fromDate)} to ${formatDate(toDate)}</span></div><div class="info-chip"><strong>Status</strong><span>${member.status}</span></div></div><table class="invoice-table"><thead><tr><th>DATE</th><th>EVENT</th><th>AMOUNT (KES)</th><tr></thead><tbody>${filtered.map(c=>`<tr><td>${formatDate(c.date)}</td><td>${toTitle(getEventName(c.eventId))}</td><td style="text-align:right;">${formatKES(c.amount)}</td></tr>`).join('')}</tbody></table><div class="info-chip" style="margin:1rem 0;"><strong>Event Summary</strong><table style="width:100%; margin-top:8px;">${eventsRows}<tr></div><div class="total-glam"><strong>TOTAL CONTRIBUTION: ${formatKES(totalAmount)}</strong></div><div class="footer-signature"><span><i class="fas fa-phone"></i> +254112598008 | linakha.family</span><span>Thank you for your contribution, let's grow together.</span></div></div>`;
     }
     
     function generateEventStatement(memberId, eventId) {
@@ -519,7 +725,7 @@
         let filtered=contributions.filter(c=>c.memberId===memberId && c.eventId===eventId).sort((a,b)=>new Date(a.date)-new Date(b.date));
         let totalAmount=filtered.reduce((s,c)=>s+c.amount,0);
         let invId="EVT-"+Math.floor(Math.random()*10000);
-        return `<div id="eventStatementA4" class="print-document"><div class="statement-header"><div><h2>LINAKHA FAMILY</h2><p>Event Contribution Statement</p></div><div><strong>#${invId}</strong><br>${new Date().toLocaleDateString()}</div></div><div class="info-rounded"><div class="info-chip"><strong>Member</strong><span>${member.name}</span></div><div class="info-chip"><strong>Event</strong><span>${toTitle(event.name)}</span></div><div class="info-chip"><strong>Target</strong><span>${formatKES(event.target)}</span></div></div><table class="invoice-table"><thead><tr><th>DATE</th><th>AMOUNT (KES)</th></tr></thead><tbody>${filtered.map(c=>`<tr><td>${formatDate(c.date)}</td><td style="text-align:right;">${formatKES(c.amount)}</td></tr>`).join('')}</tbody></table><div class="total-glam"><strong>TOTAL CONTRIBUTION: ${formatKES(totalAmount)}</strong></div><div class="footer-signature"><span><i class="fas fa-phone"></i> +254112598008 | linakha.family</span><span>Thank you for your contribution, let's grow together.</span></div></div>`;
+        return `<div id="eventStatementA4" class="print-document"><div class="statement-header"><div><h2>LINAKHA FAMILY</h2><p>Event Contribution Statement</p></div><div><strong>#${invId}</strong><br>${new Date().toLocaleDateString()}</div></div><div class="info-rounded"><div class="info-chip"><strong>Member</strong><span>${member.name}</span></div><div class="info-chip"><strong>Event</strong><span>${toTitle(event.name)}</span></div><div class="info-chip"><strong>Target</strong><span>${formatKES(event.target)}</span></div></div><table class="invoice-table"><thead><tr><th>DATE</th><th>AMOUNT (KES)</th></td></thead><tbody>${filtered.map(c=>`<tr><td>${formatDate(c.date)}</td><td style="text-align:right;">${formatKES(c.amount)}</td></tr>`).join('')}</tbody></table><div class="total-glam"><strong>TOTAL CONTRIBUTION: ${formatKES(totalAmount)}</strong></div><div class="footer-signature"><span><i class="fas fa-phone"></i> +254112598008 | linakha.family</span><span>Thank you for your contribution, let's grow together.</span></div></div>`;
     }
     
     function generateAllMembersReport(eventId) {
@@ -551,6 +757,7 @@
     
     // CRUD Operations
     document.getElementById("recordContBtn").onclick = () => {
+        if(!canEditContributions()) { showToast("You don't have permission to add contributions", "error"); return; }
         let selectedMemberId = parseInt(document.getElementById("contMemberSel").value);
         let selectedEventId = parseInt(document.getElementById("contEventSel").value);
         let amount = parseFloat(document.getElementById("contAmount").value);
@@ -571,9 +778,9 @@
         canvasConfetti({ particleCount: 50, spread: 45, origin: { y: 0.7 } });
     };
     
-    document.getElementById("createEventBtn").onclick = () => { let name=document.getElementById("newEventName").value.trim(); if(!name) return alert("Event name required"); let target=parseFloat(document.getElementById("newEventTarget").value)||0; let newId=events.length?Math.max(...events.map(e=>e.id))+1:1; events.push({id:newId, name, target, archived:false}); addActivity("Event Created", `${name} with target ${formatKES(target)}`); saveToLocal(); refreshAll(); document.getElementById("newEventName").value=""; document.getElementById("newEventTarget").value=""; showToast("Event created", "success"); };
-    document.getElementById("addMemberBtn").onclick = () => { let name=document.getElementById("newMemberName").value.trim(); if(!name) return alert("Name required"); let status=document.getElementById("memberStatusSelect").value; let newId=members.length?Math.max(...members.map(m=>m.id))+1:1; members.push({id:newId, name, status, activeSince: new Date().toISOString().slice(0,10), inactiveSince: "", role: "Member"}); addActivity("Member Added", `${name} (${status})`); saveToLocal(); refreshAll(); document.getElementById("newMemberName").value=""; showToast("Member added", "success"); };
-    document.getElementById("bulkAddBtn").onclick = () => { let names = prompt("Enter member names separated by commas:"); if(names){ names.split(',').forEach(n => { let name = n.trim(); if(name){ let newId=members.length?Math.max(...members.map(m=>m.id))+1:1; members.push({id:newId, name, status:"active", activeSince: new Date().toISOString().slice(0,10), inactiveSince: "", role: "Member"}); } }); addActivity("Bulk Members Added", `${names.split(',').length} members added`); saveToLocal(); refreshAll(); showToast("Members added", "success"); } };
+    document.getElementById("createEventBtn").onclick = () => { if(!canEdit()) { showToast("You don't have permission to create events", "error"); return; } let name=document.getElementById("newEventName").value.trim(); if(!name) return alert("Event name required"); let target=parseFloat(document.getElementById("newEventTarget").value)||0; let newId=events.length?Math.max(...events.map(e=>e.id))+1:1; events.push({id:newId, name, target, archived:false}); addActivity("Event Created", `${name} with target ${formatKES(target)}`); saveToLocal(); refreshAll(); document.getElementById("newEventName").value=""; document.getElementById("newEventTarget").value=""; showToast("Event created", "success"); };
+    document.getElementById("addMemberBtn").onclick = () => { if(!canEdit()) { showToast("You don't have permission to add members", "error"); return; } let name=document.getElementById("newMemberName").value.trim(); if(!name) return alert("Name required"); let status=document.getElementById("memberStatusSelect").value; let newId=members.length?Math.max(...members.map(m=>m.id))+1:1; members.push({id:newId, name, status, activeSince: new Date().toISOString().slice(0,10), inactiveSince: "", role: "Member"}); addActivity("Member Added", `${name} (${status})`); saveToLocal(); refreshAll(); document.getElementById("newMemberName").value=""; showToast("Member added", "success"); };
+    document.getElementById("bulkAddBtn").onclick = () => { if(!canEdit()) { showToast("You don't have permission to add members", "error"); return; } let names = prompt("Enter member names separated by commas:"); if(names){ names.split(',').forEach(n => { let name = n.trim(); if(name){ let newId=members.length?Math.max(...members.map(m=>m.id))+1:1; members.push({id:newId, name, status:"active", activeSince: new Date().toISOString().slice(0,10), inactiveSince: "", role: "Member"}); } }); addActivity("Bulk Members Added", `${names.split(',').length} members added`); saveToLocal(); refreshAll(); showToast("Members added", "success"); } };
     document.getElementById("exportAllDataBtn").onclick = () => { let data = { members, events, contributions, activityLog, users, exportedAt: new Date().toISOString() }; let blob = new Blob([JSON.stringify(data, null, 2)], {type: "application/json"}); let link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = `linakha_backup_${new Date().toISOString().slice(0,10)}.json`; link.click(); showToast("Backup exported", "success"); };
     document.getElementById("importDataBtn").onclick = () => { let file = document.getElementById("importFileInput").files[0]; if(!file) return alert("Select a backup file"); let reader = new FileReader(); reader.onload = (e) => { try { let data = JSON.parse(e.target.result); if(data.members) members = data.members; if(data.events) events = data.events; if(data.contributions) contributions = data.contributions; if(data.activityLog) activityLog = data.activityLog; if(data.users) users = data.users; saveToLocal(); refreshAll(); showToast("Data imported successfully", "success"); addActivity("Data Imported", "Backup restored"); } catch(err) { alert("Invalid backup file"); } }; reader.readAsText(file); };
     document.getElementById("clearActivityBtn").onclick = () => { if(confirm("Clear all activity log?")){ activityLog = []; saveToLocal(); renderActivityLog(); showToast("Activity log cleared", "info"); } };
@@ -633,8 +840,8 @@
             document.getElementById("loginOverlay").style.display = "none";
             document.getElementById("appContainer").style.display = "block";
             refreshAll();
-            addActivity("User Login", `${user.fullName} logged in`);
-            showToast(`Welcome back, ${user.fullName}!`, "success");
+            addActivity("User Login", `${user.fullName} logged in as ${ROLES[user.role]?.name || user.role}`);
+            showToast(`Welcome back, ${user.fullName}! (${ROLES[user.role]?.name || user.role})`, "success");
         } else {
             alert("Invalid credentials");
         }
@@ -661,11 +868,12 @@
     };
     
     document.getElementById("addUserBtn").onclick = () => {
+        if(!canManageUsers()) { showToast("Only admins can add users", "error"); return; }
         showCustomModal('Add New User', [
             { label: 'Full Name', key: 'fullName', value: '' },
             { label: 'Username', key: 'username', value: '' },
             { label: 'Password', key: 'password', value: '', type: 'password' },
-            { label: 'Role', key: 'role', value: 'member', type: 'select', options: ['admin', 'member'] }
+            { label: 'Role', key: 'role', value: 'member', type: 'select', options: ['admin', 'treasurer', 'chair', 'youth', 'member'] }
         ], (values) => {
             if (!values.username || !values.password || !values.fullName) {
                 showToast("All fields required", "error");
@@ -693,7 +901,7 @@
     document.querySelectorAll(".nav-item, .shortcut-btn").forEach(btn=>{ btn.addEventListener("click",()=>{ let page=btn.getAttribute("data-page"); if(!page && btn.classList.contains("shortcut-btn")) page=btn.getAttribute("data-nav"); if(page){ document.querySelectorAll(".page").forEach(p=>p.style.display="none"); document.getElementById(`${page}Page`).style.display="block"; document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("active")); document.querySelector(`.nav-item[data-page="${page}"]`).classList.add("active"); document.getElementById("pageTitle").innerText = page.charAt(0).toUpperCase() + page.slice(1); document.getElementById("sidebar").classList.remove("open"); } }); });
     document.getElementById("mobileMenuToggle").onclick = () => document.getElementById("sidebar").classList.add("open");
     document.getElementById("closeSidebarBtn").onclick = () => document.getElementById("sidebar").classList.remove("open");
-    document.getElementById("logoutBtnSide").onclick = () => { currentUser = null; document.getElementById("appContainer").style.display = "none"; document.getElementById("loginOverlay").style.display = "flex"; document.getElementById("loginUsername").value = ""; document.getElementById("loginPassword").value = ""; };
+    document.getElementById("logoutBtnSide").onclick = () => { currentUser = null; isTransactionLogUnlocked = false; document.getElementById("appContainer").style.display = "none"; document.getElementById("loginOverlay").style.display = "flex"; document.getElementById("loginUsername").value = ""; document.getElementById("loginPassword").value = ""; };
     
     loadFromLocal();
     refreshAll();
