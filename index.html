@@ -719,7 +719,7 @@
         }
 
         /* ============================================
-           MESSAGE ATTACHMENT - NEW
+           MESSAGE ATTACHMENT - FIXED LABEL
            ============================================ */
         
         .attachment-preview {
@@ -1501,7 +1501,7 @@
         }
 
         /* ============================================
-           ROLE MANAGEMENT - NEW
+           ROLE MANAGEMENT - PRESERVED
            ============================================ */
         
         .roles-list {
@@ -1549,7 +1549,7 @@
         }
 
         /* ============================================
-           TAGLINE MODAL - NEW
+           TAGLINE MODAL - PRESERVED
            ============================================ */
         
         .tagline-preview {
@@ -1564,6 +1564,28 @@
         .tagline-preview p {
             font-size: 1.2rem;
             font-style: italic;
+        }
+
+        /* ============================================
+           CSV PREVIEW MODAL - NEW
+           ============================================ */
+        
+        .csv-preview-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: var(--space-md) 0;
+        }
+        
+        .csv-preview-table th,
+        .csv-preview-table td {
+            padding: 0.5rem;
+            border: 1px solid var(--border-light);
+            font-size: 0.8rem;
+        }
+        
+        .csv-preview-table th {
+            background: var(--primary);
+            color: white;
         }
 
         /* ============================================
@@ -1690,6 +1712,29 @@
         </div>
     </div>
 
+    <!-- CSV Import Preview Modal -->
+    <div class="modal-overlay" id="csvPreviewModal">
+        <div class="modal" style="max-width: 700px;">
+            <div class="modal-header">
+                <h3><i class="fas fa-file-csv"></i> CSV Import Preview</h3>
+                <button class="modal-close" onclick="closeModal('csvPreviewModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom: var(--space-md);">Found <span id="csvRowCount">0</span> members to import.</p>
+                <div style="max-height: 300px; overflow: auto;">
+                    <table class="csv-preview-table" id="csvPreviewTable">
+                        <thead><tr><th>Name</th><th>Status</th><th>Department</th></tr></thead>
+                        <tbody id="csvPreviewBody"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="confirmCsvImportBtn">Import Members</button>
+                <button class="btn btn-secondary" onclick="closeModal('csvPreviewModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Login Screen -->
     <div class="login-overlay" id="loginOverlay">
         <div class="login-card">
@@ -1766,9 +1811,9 @@
             <div class="file-input-wrapper" style="margin-top: 8px;">
                 <label class="file-input-label" style="padding: 0.5rem;">
                     <i class="fas fa-paperclip"></i>
-                    <span>Attach file</span>
+                    <span>📎 Attach to message (optional)</span>
                 </label>
-                <input type="file" id="messageAttachmentInput" onchange="handleMessageAttachment(this)">
+                <input type="file" id="messageAttachmentInput" accept="image/*,.pdf" onchange="handleMessageAttachment(this)">
             </div>
             <div id="messageAttachmentPreview"></div>
             <div class="compose-actions">
@@ -1789,6 +1834,78 @@
             <button class="btn btn-secondary btn-sm" onclick="markAllNotificationsRead()">
                 <i class="fas fa-check-double"></i> Mark All Read
             </button>
+        </div>
+    </div>
+
+    <!-- Edit Member Modal -->
+    <div class="modal-overlay" id="editMemberModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-user-edit"></i> Edit Member</h3>
+                <button class="modal-close" onclick="closeModal('editMemberModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editMemberId">
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" class="form-control" id="editMemberName" placeholder="Member name">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Status</label>
+                    <select class="form-control" id="editMemberStatus">
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Role</label>
+                    <select class="form-control" id="editMemberRole">
+                        <option value="member">Member</option>
+                        <option value="treasurer">Treasurer</option>
+                        <option value="chair">Chairperson</option>
+                        <option value="deputy">Deputy Chair</option>
+                        <option value="secretary">Secretary</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Department (Optional)</label>
+                    <input type="text" class="form-control" id="editMemberDepartment" placeholder="e.g., Choir, Ushers, Youth">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="saveMemberBtn">Save Changes</button>
+                <button class="btn btn-secondary" onclick="closeModal('editMemberModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Event Modal -->
+    <div class="modal-overlay" id="editEventModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-calendar-edit"></i> Edit Project</h3>
+                <button class="modal-close" onclick="closeModal('editEventModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editEventId">
+                <div class="form-group">
+                    <label class="form-label">Project Name</label>
+                    <input type="text" class="form-control" id="editEventName" placeholder="Project name">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Target Amount (KES)</label>
+                    <input type="number" class="form-control" id="editEventTarget" placeholder="Target amount">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Deadline</label>
+                    <input type="date" class="form-control" id="editEventDeadline">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="saveEventBtn">Save Changes</button>
+                <button class="btn btn-secondary" onclick="closeModal('editEventModal')">Cancel</button>
+            </div>
         </div>
     </div>
 
@@ -2042,7 +2159,7 @@
 
     <script>
         // ============================================
-        // EVERMORE FINANCE HUB - COMPLETE FUNCTIONALITY
+        // EVERMORE FINANCE HUB - FULLY FUNCTIONAL
         // ============================================
         
         const { jsPDF } = window.jspdf;
@@ -2064,6 +2181,7 @@
         let messageAttachment = null;
         let currentViewerFile = null;
         let viewerZoom = 1;
+        let pendingCsvData = null;
         
         // Role system
         let customRoles = JSON.parse(localStorage.getItem('evermore_custom_roles') || '[]');
@@ -2087,6 +2205,7 @@
             updateTagline();
             setupEventListeners();
             initNotifications();
+            setupMobileSidebar();
             
             const today = new Date().toISOString().split('T')[0];
             if (document.getElementById('contDate')) document.getElementById('contDate').value = today;
@@ -2095,6 +2214,17 @@
                 document.getElementById('stmtFromDate').value = lastMonth.toISOString().split('T')[0];
                 document.getElementById('stmtToDate').value = today;
             }
+        }
+        
+        function setupMobileSidebar() {
+            document.addEventListener('click', (e) => {
+                const sidebar = document.getElementById('sidebar');
+                const toggle = document.getElementById('mobileMenuToggle');
+                if (window.innerWidth <= 768 && sidebar.classList.contains('open') &&
+                    !sidebar.contains(e.target) && !toggle.contains(e.target)) {
+                    sidebar.classList.remove('open');
+                }
+            });
         }
         
         function loadData() {
@@ -2176,7 +2306,6 @@
             if (!currentUser) return;
             const perms = rolePermissions[currentUser.role] || rolePermissions.member;
             
-            // Sidebar
             const sidebarNav = document.getElementById('sidebarNav');
             sidebarNav.innerHTML = `
                 <div class="nav-item active" data-page="dashboard"><i class="fas fa-chart-pie"></i><span>Dashboard</span></div>
@@ -2188,14 +2317,12 @@
                 <div class="nav-item" data-page="settings"><i class="fas fa-cog"></i><span>Settings</span></div>
             `;
             
-            // Cards visibility
             document.getElementById('createEventCard').style.display = perms.canEditAll ? 'block' : 'none';
             document.getElementById('addMemberCard').style.display = perms.canManageUsers ? 'block' : 'none';
             document.getElementById('recordContributionCard').style.display = perms.canEditContributions ? 'block' : 'none';
             document.getElementById('roleManagementSection').style.display = perms.canManageRoles ? 'block' : 'none';
             document.getElementById('composeMessageArea').style.display = perms.canSendNotifications ? 'block' : 'none';
             
-            // Quick actions
             document.getElementById('quickActions').innerHTML = `
                 ${perms.canEditAll ? '<button class="btn btn-primary" onclick="navigateTo(\'events\')"><i class="fas fa-calendar-plus"></i> New Project</button>' : ''}
                 ${perms.canManageUsers ? '<button class="btn btn-primary" onclick="navigateTo(\'members\')"><i class="fas fa-user-plus"></i> Add Member</button>' : ''}
@@ -2203,11 +2330,8 @@
                 <button class="btn btn-secondary" onclick="navigateTo(\'statements\')"><i class="fas fa-file-pdf"></i> Report</button>
             `;
             
-            // Re-attach nav listeners
             document.querySelectorAll('[data-page]').forEach(item => {
-                item.addEventListener('click', (e) => {
-                    navigateTo(e.currentTarget.dataset.page);
-                });
+                item.addEventListener('click', (e) => navigateTo(e.currentTarget.dataset.page));
             });
         }
 
@@ -2416,8 +2540,23 @@
         };
 
         // ============================================
-        // MEMBER MANAGEMENT
+        // MEMBER MANAGEMENT - FULLY FUNCTIONAL
         // ============================================
+        
+        window.editMember = (id) => {
+            if (!canManageUsers() && currentUser?.role !== 'admin') { 
+                showToast('Permission denied', 'error'); return; 
+            }
+            const member = members.find(m => m.id === id);
+            if (member) {
+                document.getElementById('editMemberId').value = id;
+                document.getElementById('editMemberName').value = member.name;
+                document.getElementById('editMemberStatus').value = member.status;
+                document.getElementById('editMemberRole').value = member.role || 'member';
+                document.getElementById('editMemberDepartment').value = member.department || '';
+                openModal('editMemberModal');
+            }
+        };
         
         window.deleteMember = (id) => {
             if (!canDelete()) { showToast('Permission denied', 'error'); return; }
@@ -2428,6 +2567,28 @@
                 saveAllData(); refreshMembers(); refreshDashboard();
                 showToast(`${m.name} deleted`, 'success');
                 addActivity('Member Deleted', m.name);
+            }
+        };
+        
+        window.toggleMemberStatus = (id) => {
+            if (!canManageUsers()) { showToast('Permission denied', 'error'); return; }
+            const m = members.find(x => x.id === id);
+            if (m) { m.status = m.status === 'active' ? 'inactive' : 'active'; saveAllData(); refreshMembers(); }
+        };
+
+        // ============================================
+        // EVENT MANAGEMENT - FULLY FUNCTIONAL
+        // ============================================
+        
+        window.editEvent = (id) => {
+            if (!canEdit()) { showToast('Permission denied', 'error'); return; }
+            const event = events.find(e => e.id === id);
+            if (event) {
+                document.getElementById('editEventId').value = id;
+                document.getElementById('editEventName').value = event.name;
+                document.getElementById('editEventTarget').value = event.target;
+                document.getElementById('editEventDeadline').value = event.deadline || '';
+                openModal('editEventModal');
             }
         };
         
@@ -2443,28 +2604,81 @@
             }
         };
         
-        function importMembersFromCSV(file) {
+        window.archiveEvent = (id) => { 
+            const e = events.find(x => x.id === id); 
+            if(e){ e.archived = true; saveAllData(); refreshEvents(); showToast(`${e.name} archived`,'success'); } 
+        };
+
+        // ============================================
+        // CSV IMPORT WITH PREVIEW
+        // ============================================
+        
+        function previewCSVImport(file) {
             const reader = new FileReader();
-            reader.onload = e => {
-                const lines = e.target.result.split('\n');
+            reader.onload = (e) => {
+                const lines = e.target.result.split('\n').filter(l => l.trim());
                 const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
                 const nameIdx = headers.indexOf('name');
+                
                 if (nameIdx === -1) { showToast('CSV must have "name" column', 'error'); return; }
-                let added = 0;
-                for (let i = 1; i < lines.length; i++) {
-                    if (!lines[i].trim()) continue;
+                
+                const statusIdx = headers.indexOf('status');
+                const deptIdx = headers.indexOf('department');
+                
+                const previewData = [];
+                for (let i = 1; i < Math.min(lines.length, 11); i++) {
                     const vals = lines[i].split(',').map(v => v.trim());
                     const name = vals[nameIdx];
                     if (name && !members.some(m => m.name.toLowerCase() === name.toLowerCase())) {
-                        members.push({ id: Math.max(...members.map(m=>m.id),0)+1+added, name, status:'active', role:'member', department:'' });
-                        added++;
+                        previewData.push({
+                            name,
+                            status: (statusIdx !== -1 && vals[statusIdx]) || 'active',
+                            department: (deptIdx !== -1 && vals[deptIdx]) || ''
+                        });
                     }
                 }
-                saveAllData(); refreshMembers();
-                showToast(`${added} members imported`, 'success');
-                addActivity('Bulk Import', `Imported ${added} members`);
+                
+                pendingCsvData = { lines, headers, nameIdx, statusIdx, deptIdx };
+                
+                document.getElementById('csvRowCount').textContent = previewData.length;
+                document.getElementById('csvPreviewBody').innerHTML = previewData.map(d => 
+                    `<tr><td>${d.name}</td><td>${d.status}</td><td>${d.department}</td></tr>`
+                ).join('');
+                
+                openModal('csvPreviewModal');
             };
             reader.readAsText(file);
+        }
+        
+        function executeCsvImport() {
+            if (!pendingCsvData) return;
+            
+            const { lines, nameIdx, statusIdx, deptIdx } = pendingCsvData;
+            let added = 0;
+            let nextId = Math.max(...members.map(m => m.id), 0) + 1;
+            
+            for (let i = 1; i < lines.length; i++) {
+                if (!lines[i].trim()) continue;
+                const vals = lines[i].split(',').map(v => v.trim());
+                const name = vals[nameIdx];
+                if (name && !members.some(m => m.name.toLowerCase() === name.toLowerCase())) {
+                    members.push({
+                        id: nextId++,
+                        name,
+                        status: (statusIdx !== -1 && vals[statusIdx]) || 'active',
+                        role: 'member',
+                        department: (deptIdx !== -1 && vals[deptIdx]) || ''
+                    });
+                    added++;
+                }
+            }
+            
+            saveAllData();
+            refreshMembers();
+            closeModal('csvPreviewModal');
+            showToast(`${added} members imported`, 'success');
+            addActivity('Bulk Import', `Imported ${added} members via CSV`);
+            pendingCsvData = null;
         }
         
         function factoryReset() {
@@ -2532,7 +2746,7 @@
         }
 
         // ============================================
-        // DOCUMENT GENERATION (PRESERVED)
+        // DOCUMENT GENERATION
         // ============================================
         
         function generateReceiptNumber() {
@@ -2661,17 +2875,11 @@
             document.getElementById('eventsListDiv').innerHTML = filtered.length ? `<table><thead><tr><th>Project</th><th>Target</th><th>Deadline</th><th>Progress</th><th>Actions</th></tr></thead><tbody>${filtered.map(e=>{const col=contributions.filter(c=>c.eventId===e.id).reduce((s,c)=>s+c.amount,0),pct=(col/e.target)*100;return`<tr><td>${e.name}</td><td>${formatKES(e.target)}</td><td>${formatDate(e.deadline)}</td><td><div style="display:flex;align-items:center;gap:8px;"><div class="progress-container"><div class="progress-bar" style="width:${Math.min(pct,100)}%"></div></div><span>${pct.toFixed(0)}%</span></div></td><td>${canEditEvents?`<button class="btn-icon" onclick="editEvent(${e.id})"><i class="fas fa-edit"></i></button>`:''}<button class="btn-icon" onclick="archiveEvent(${e.id})"><i class="fas fa-archive"></i></button>${canDelEvents?`<button class="btn-icon" onclick="deleteEvent(${e.id})" style="color:var(--danger);"><i class="fas fa-trash"></i></button>`:''}</td></tr>`}).join('')}</tbody></table>` : `<div class="empty-state"><i class="fas fa-project-diagram"></i><p>No projects found</p></div>`;
         }
         
-        window.archiveEvent = (id) => { const e = events.find(x=>x.id===id); if(e){ e.archived = true; saveAllData(); refreshEvents(); showToast(`${e.name} archived`,'success'); } };
-        window.editEvent = (id) => { /* Implementation preserved */ showToast('Edit event','info'); };
-        
         function refreshMembers() {
             const filtered = members;
             const canManage = canManageUsers(), canDel = canDelete();
             document.getElementById('membersListDiv').innerHTML = filtered.length ? `<table><thead><tr><th>Name</th><th>Role</th><th>Dept</th><th>Status</th><th>Total</th><th>Actions</th></tr></thead><tbody>${filtered.map(m=>{const total=contributions.filter(c=>c.memberId===m.id).reduce((s,c)=>s+c.amount,0);return`<tr><td>${m.name}</td><td><span class="role-badge role-${m.role||'member'}">${m.role||'Member'}</span></td><td>${m.department||'—'}</td><td><span class="badge badge-${m.status==='active'?'success':'warning'}">${m.status}</span></td><td><strong>${formatKES(total)}</strong></td><td>${canManage?`<button class="btn-icon" onclick="editMember(${m.id})"><i class="fas fa-edit"></i></button><button class="btn-icon" onclick="toggleMemberStatus(${m.id})"><i class="fas fa-exchange-alt"></i></button>`:''}${canDel?`<button class="btn-icon" onclick="deleteMember(${m.id})" style="color:var(--danger);"><i class="fas fa-trash"></i></button>`:''}</td></tr>`}).join('')}</tbody></table>` : `<div class="empty-state"><i class="fas fa-users"></i><p>No members</p></div>`;
         }
-        
-        window.editMember = (id) => { showToast('Edit member','info'); };
-        window.toggleMemberStatus = (id) => { const m = members.find(x=>x.id===id); if(m){ m.status = m.status==='active'?'inactive':'active'; saveAllData(); refreshMembers(); showToast(`${m.name} marked ${m.status}`,'success'); } };
         
         function refreshContributions() {
             document.getElementById('contMemberSel').innerHTML = members.filter(m=>m.status==='active').map(m=>`<option value="${m.id}">${m.name}</option>`).join('');
@@ -2709,6 +2917,47 @@
             document.getElementById('themeToggle')?.addEventListener('click', () => document.body.classList.toggle('dark'));
             document.getElementById('darkModeToggleBtn')?.addEventListener('click', () => document.body.classList.toggle('dark'));
             document.getElementById('mobileMenuToggle')?.addEventListener('click', () => document.getElementById('sidebar').classList.add('open'));
+            
+            // Save Member
+            document.getElementById('saveMemberBtn').addEventListener('click', () => {
+                const id = parseInt(document.getElementById('editMemberId').value);
+                const member = members.find(m => m.id === id);
+                if (member) {
+                    const newRole = document.getElementById('editMemberRole').value;
+                    if (newRole !== member.role) {
+                        const currentCount = members.filter(m => m.role === newRole).length;
+                        const limit = roleLimits[newRole];
+                        if (limit && currentCount >= limit) { showToast(`Maximum ${newRole} limit reached`, 'error'); return; }
+                    }
+                    member.name = document.getElementById('editMemberName').value;
+                    member.status = document.getElementById('editMemberStatus').value;
+                    member.role = newRole;
+                    member.department = document.getElementById('editMemberDepartment').value;
+                    saveAllData();
+                    closeModal('editMemberModal');
+                    refreshMembers();
+                    showToast('Member updated', 'success');
+                    addActivity('Member Edited', `${member.name} updated`);
+                }
+            });
+            
+            // Save Event
+            document.getElementById('saveEventBtn').addEventListener('click', () => {
+                if (!canEdit()) { showToast('Permission denied', 'error'); return; }
+                const id = parseInt(document.getElementById('editEventId').value);
+                const event = events.find(e => e.id === id);
+                if (event) {
+                    event.name = document.getElementById('editEventName').value;
+                    event.target = parseFloat(document.getElementById('editEventTarget').value);
+                    event.deadline = document.getElementById('editEventDeadline').value;
+                    saveAllData();
+                    closeModal('editEventModal');
+                    refreshEvents();
+                    showToast('Project updated', 'success');
+                    addActivity('Event Edited', `${event.name} updated`);
+                }
+            });
+            
             document.getElementById('createEventBtn')?.addEventListener('click', () => {
                 if (!canEdit()) { showToast('Permission denied','error'); return; }
                 const n = document.getElementById('newEventName').value.trim(), t = parseFloat(document.getElementById('newEventTarget').value);
@@ -2716,6 +2965,7 @@
                 events.push({ id: Math.max(...events.map(e=>e.id),0)+1, name: n, target: t, deadline: document.getElementById('newEventDeadline').value, archived: false });
                 saveAllData(); refreshEvents(); showToast('Project created','success'); confetti({ particleCount: 50, spread: 60 });
             });
+            
             document.getElementById('addMemberBtn')?.addEventListener('click', () => {
                 if (!canManageUsers()) { showToast('Permission denied','error'); return; }
                 const n = document.getElementById('newMemberName').value.trim();
@@ -2723,8 +2973,11 @@
                 members.push({ id: Math.max(...members.map(m=>m.id),0)+1, name: n, status: document.getElementById('memberStatusSelect').value, role: 'member', department: '' });
                 saveAllData(); refreshMembers(); showToast('Member added','success');
             });
+            
             document.getElementById('bulkAddBtn')?.addEventListener('click', () => document.getElementById('csvFileInput').click());
-            document.getElementById('csvFileInput')?.addEventListener('change', e => { if(e.target.files[0]) importMembersFromCSV(e.target.files[0]); });
+            document.getElementById('csvFileInput')?.addEventListener('change', e => { if(e.target.files[0]) previewCSVImport(e.target.files[0]); });
+            document.getElementById('confirmCsvImportBtn')?.addEventListener('click', executeCsvImport);
+            
             document.getElementById('recordContBtn')?.addEventListener('click', () => {
                 if (!canEditContributions()) { showToast('Permission denied','error'); return; }
                 const mid = parseInt(document.getElementById('contMemberSel').value), eid = parseInt(document.getElementById('contEventSel').value), amt = parseFloat(document.getElementById('contAmount').value), dt = document.getElementById('contDate').value;
@@ -2732,27 +2985,33 @@
                 contributions.push({ id: Math.max(...contributions.map(c=>c.id),0)+1, memberId: mid, eventId: eid, amount: amt, date: dt });
                 saveAllData(); refreshDashboard(); showToast('Contribution recorded','success'); confetti({ particleCount: 30 });
             });
+            
             document.getElementById('txEventSelect')?.addEventListener('change', e => {
                 const eid = parseInt(e.target.value); if (!eid) return;
                 const contribs = contributions.filter(c=>c.eventId===eid);
                 document.getElementById('transactionLogTable').innerHTML = contribs.length ? `<table><thead><tr><th>Date</th><th>Member</th><th>Amount</th><th>Actions</th></tr></thead><tbody>${contribs.map(c=>`<tr><td>${formatDate(c.date)}</td><td>${getMemberName(c.memberId)}</td><td>${formatKES(c.amount)}</td><td>${canDelete()?`<button class="btn-icon" onclick="deleteContribution(${c.id},${eid})"><i class="fas fa-trash" style="color:var(--danger);"></i></button>`:'<span class="badge">View</span>'}</td></tr>`).join('')}</tbody></table>` : `<div class="empty-state"><i class="fas fa-inbox"></i><p>No contributions</p></div>`;
             });
+            
             window.deleteContribution = (id, eid) => {
                 if (!canDelete()) { showToast('Permission denied','error'); return; }
                 if (confirm('Delete?')) { contributions = contributions.filter(c=>c.id!==id); saveAllData(); document.getElementById('txEventSelect').dispatchEvent(new Event('change')); refreshDashboard(); showToast('Deleted','success'); }
             };
+            
             document.getElementById('previewSummaryBtn')?.addEventListener('click', () => {
                 const eid = parseInt(document.getElementById('eventSummarySelect').value);
                 if (eid) document.getElementById('summaryPreviewArea').innerHTML = generateSummaryCard(eid);
             });
+            
             document.getElementById('exportSummaryPdfBtn')?.addEventListener('click', () => {
                 const eid = parseInt(document.getElementById('eventSummarySelect').value);
                 if (eid) downloadPDF(generateSummaryCard(eid), `${institutionName}_${getEventName(eid)}.pdf`);
             });
+            
             document.getElementById('exportSummaryPngBtn')?.addEventListener('click', () => {
                 const eid = parseInt(document.getElementById('eventSummarySelect').value);
                 if (eid) downloadPNG(generateSummaryCard(eid), `${institutionName}_${getEventName(eid)}.png`);
             });
+            
             document.getElementById('exportSummaryExcelBtn')?.addEventListener('click', () => {
                 const eid = parseInt(document.getElementById('eventSummarySelect').value);
                 if (eid) {
@@ -2761,24 +3020,29 @@
                     XLSX.writeFile(wb, `${institutionName}_${getEventName(eid)}.xlsx`); showToast('Excel downloaded','success');
                 }
             });
+            
             document.getElementById('previewStmtBtn')?.addEventListener('click', () => {
                 const mid = parseInt(document.getElementById('stmtMemberSel').value), from = document.getElementById('stmtFromDate').value, to = document.getElementById('stmtToDate').value;
                 if (mid && from && to) document.getElementById('statementPreviewArea').innerHTML = generateMemberStatement(mid, from, to);
             });
+            
             document.getElementById('downloadStmtBtn')?.addEventListener('click', () => {
                 const mid = parseInt(document.getElementById('stmtMemberSel').value), from = document.getElementById('stmtFromDate').value, to = document.getElementById('stmtToDate').value;
                 if (mid && from && to) downloadPDF(generateMemberStatement(mid, from, to), `${institutionName}_${getMemberName(mid)}_Statement.pdf`);
             });
+            
             document.getElementById('downloadStmtPngBtn')?.addEventListener('click', () => {
                 const mid = parseInt(document.getElementById('stmtMemberSel').value), from = document.getElementById('stmtFromDate').value, to = document.getElementById('stmtToDate').value;
                 if (mid && from && to) downloadPNG(generateMemberStatement(mid, from, to), `${institutionName}_${getMemberName(mid)}_Statement.png`);
             });
+            
             document.getElementById('exportAllDataBtn')?.addEventListener('click', () => {
                 const data = { members, events, contributions, users, institutionName, dashboardTagline };
                 const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
                 const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `evermore_backup_${new Date().toISOString().split('T')[0]}.json`; a.click();
                 showToast('Backup exported','success');
             });
+            
             document.getElementById('importFileInput')?.addEventListener('change', e => {
                 const f = e.target.files[0]; if (!f) return;
                 const r = new FileReader(); r.onload = ev => {
@@ -2791,6 +3055,7 @@
                     } catch { showToast('Invalid file','error'); }
                 }; r.readAsText(f);
             });
+            
             document.getElementById('factoryResetBtn')?.addEventListener('click', factoryReset);
             document.getElementById('searchEventInput')?.addEventListener('input', refreshEvents);
             document.getElementById('searchMemberInput')?.addEventListener('input', refreshMembers);
